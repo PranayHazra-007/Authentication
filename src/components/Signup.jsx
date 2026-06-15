@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -16,7 +17,9 @@ const Signup = () => {
   };
 
   const SignupUser = () => {
-    localStorage.setItem("user", JSON.stringify(user));
+      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+        existingUsers.push(user);
+      localStorage.setItem("users", JSON.stringify(existingUsers));
     alert("User data saved successfully!");
     setUser({
       username: "",
@@ -66,6 +69,8 @@ const Signup = () => {
         <button className="btn btn-primary w-100" onClick={SignupUser}>
           Signup
         </button>
+        <br/>
+        <p>Already have an Account? <Link to="/login">Login here</Link></p>
       </div>
     </div>
   );
