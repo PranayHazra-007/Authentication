@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
@@ -16,7 +16,9 @@ const PrivateRoute = ({ children }) => {
 
 const App = () => {
   return (
+    
     <BrowserRouter>
+     <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />

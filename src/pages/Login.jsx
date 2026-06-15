@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Login = () => {
     );
 
     if (!user) {
-      return alert("Invalid Email or Password");
+      return toast.error("Invalid Email or Password");
     }
 
     localStorage.setItem(
@@ -35,7 +36,7 @@ const Login = () => {
       JSON.stringify(user)
     );
 
-    alert("Login Successful");
+    toast.success("Login Successful");
 
     navigate("/home");
   };

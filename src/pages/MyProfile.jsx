@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
-import {useNavigate} from "react-router-dom"
+import toast from "react-hot-toast";
 const MyProfile = () => {
-  const currentUser =
-    JSON.parse(localStorage.getItem("currentUser")) || {};
-      const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
     firstName: "",
@@ -13,25 +13,37 @@ const MyProfile = () => {
     mobile: "",
     aadhaar: "",
     dob: "",
-    education: [{ degree: "", grade: "", year: "" }],
+    education: [
+      {
+        degree: "",
+        grade: "",
+        year: "",
+      },
+    ],
   });
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
-    if (currentUser.profile) {
+    if (currentUser && currentUser.profile) {
       setProfile(currentUser.profile);
     }
   }, []);
 
   const handleChange = (e) => {
-    setProfile({
-      ...profile,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setProfile((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleEdu = (index, e) => {
+  const handleEducation = (index, e) => {
+    const { name, value } = e.target;
+
     const temp = [...profile.education];
-    temp[index][e.target.name] = e.target.value;
+    temp[index][name] = value;
 
     setProfile({
       ...profile,
@@ -39,171 +51,319 @@ const MyProfile = () => {
     });
   };
 
-  const addEdu = () => {
-    if (profile.education.length >= 3) {
-      return alert("Maximum 3 Education Entries Allowed");
-    }
-
+  const addEducation = () => {
+  if(profile.education.length < 3) {
     setProfile({
       ...profile,
       education: [
         ...profile.education,
-        { degree: "", grade: "", year: "" },
+        {
+          degree: "",
+          grade: "",
+          year: "",
+        },
       ],
+    });
+  }else{
+    toast.error("You can only add up to 3 education entries.");
+  }
+  };
+
+  const removeEducation = (index) => {
+    const temp = [...profile.education];
+    temp.splice(index, 1);
+
+    setProfile({
+      ...profile,
+      education: temp,
     });
   };
 
-  const saveProfile = () => {
+  const validate = () => {
+    const err = {};
+
+    if (!profile.firstName.trim())
+      err.firstName = "First Name Required";
+
+    if (!profile.lastName.trim())
+      err.lastName = "Last Name Required";
+
+    if (!profile.gender)
+      err.gender = "Select Gender";
+
+    if (!/^\+\d{1,3}\s\d{10}$/.test(profile.mobile))
+      err.mobile = "Example: +91 9876543210";
+
+    if (
+      !/^\d{4}-\d{4}-\d{4}$/.test(profile.aadhaar)
+    )
+      err.aadhaar = "Example: 1234-5678-9012";
+
+    if (!profile.dob)
+      err.dob = "Select DOB";
+
+    profile.education.forEach((item, index) => {
+      if (!item.degree)
+        err[`degree${index}`] = "Required";
+
+      if (!item.grade)
+        err[`grade${index}`] = "Required";
+
+      if (!/^\d{4}$/.test(item.year))
+        err[`year${index}`] = "Invalid Year";
+    });
+
+    setErrors(err);
+
+    return Object.keys(err).length === 0;
+  };
+
+  const updateProfile = () => {
+    if (!validate()) return;
+
+    const updatedCurrent = {
+      ...currentUser,
+      profile,
+    };
+
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify(updatedCurrent)
+    );
+
     const users =
       JSON.parse(localStorage.getItem("users")) || [];
 
-    const updatedUsers = users.map((user) => {
-      if (user.email === currentUser.email) {
-        return {
-          ...user,
-          profile,
-        };
-      }
-      return user;
-    });
+    const updatedUsers = users.map((u) =>
+      u.email === currentUser.email
+        ? { ...u, profile }
+        : u
+    );
 
     localStorage.setItem(
       "users",
       JSON.stringify(updatedUsers)
     );
 
-    localStorage.setItem(
-      "currentUser",
-      JSON.stringify({
-        ...currentUser,
-        profile,
-      })
-    );
-
-    alert("Profile Updated Successfully");
+    toast.success("Profile Updated Successfully");
+  };
+  const updateEducation = (index) => { 
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+     const updatedCurrentUser = { ...currentUser, profile, }; 
+     localStorage.setItem( "currentUser", JSON.stringify(updatedCurrentUser) );
+     const updatedUsers = users.map((user) => { if (user.email === currentUser.email) { return { ...user, profile, }; } return user; });
+      localStorage.setItem( "users", JSON.stringify(updatedUsers) );
+       toast.success(`Education ${index + 1} Updated Successfully`);
   };
 
   return (
-    <div className="card p-4 shadow">
+    <div className="container mt-5 mb-5">
 
-      <h2 className="text-center mb-3">
-        My Profile
-      </h2>
-
-      <ProgressBar profile={profile} />
-
-      <input
-        className="form-control mb-2"
-        placeholder="First Name"
-        name="firstName"
-        value={profile.firstName}
-        onChange={handleChange}
-      />
-
-      <input
-        className="form-control mb-2"
-        placeholder="Last Name"
-        name="lastName"
-        value={profile.lastName}
-        onChange={handleChange}
-      />
-
-      <select
-        className="form-select mb-2"
-        name="gender"
-        value={profile.gender}
-        onChange={handleChange}
+      <div
+        className="card shadow p-4 mx-auto"
+        style={{ maxWidth: "700px" }}
       >
-        <option value="">Select Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-        <option>Other</option>
-      </select>
+        <h2 className="text-center mb-4">
+          Manage Profile
+        </h2>
 
-      <input
-        className="form-control mb-2"
-        placeholder="+91 9876543210"
-        name="mobile"
-        value={profile.mobile}
-        onChange={handleChange}
-      />
+        <ProgressBar profile={profile} />
 
-      <input
-        className="form-control mb-2"
-        placeholder="1234-5678-9012"
-        name="aadhaar"
-        value={profile.aadhaar}
-        onChange={handleChange}
-      />
-
-      <input
-        type="date"
-        className="form-control mb-3"
-        name="dob"
-        value={profile.dob}
-        onChange={handleChange}
-      />
-
-      <h5>Education Details</h5>
-
-      {profile.education.map((edu, index) => (
-        <div
-          key={index}
-          className="border p-2 rounded mb-2"
-        >
+        <div className="mb-3">
           <input
-            className="form-control mb-2"
-            placeholder="Degree"
-            name="degree"
-            value={edu.degree}
-            onChange={(e) =>
-              handleEdu(index, e)
-            }
+            className="form-control"
+            placeholder="First Name"
+            name="firstName"
+            value={profile.firstName}
+            onChange={handleChange}
           />
+          <small className="text-danger">
+            {errors.firstName}
+          </small>
+        </div>
 
+        <div className="mb-3">
           <input
-            className="form-control mb-2"
-            placeholder="Grade"
-            name="grade"
-            value={edu.grade}
-            onChange={(e) =>
-              handleEdu(index, e)
-            }
+            className="form-control"
+            placeholder="Last Name"
+            name="lastName"
+            value={profile.lastName}
+            onChange={handleChange}
           />
+          <small className="text-danger">
+            {errors.lastName}
+          </small>
+        </div>
+
+        <div className="mb-3">
+          <select
+            className="form-select"
+            name="gender"
+            value={profile.gender}
+            onChange={handleChange}
+          >
+            <option value="">
+              Select Gender
+            </option>
+
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+
+          </select>
+
+          <small className="text-danger">
+            {errors.gender}
+          </small>
+
+        </div>
+
+        <div className="mb-3">
 
           <input
             className="form-control"
-            placeholder="Year"
-            name="year"
-            value={edu.year}
-            onChange={(e) =>
-              handleEdu(index, e)
-            }
+            placeholder="+91 9876543210"
+            name="mobile"
+            value={profile.mobile}
+            onChange={handleChange}
           />
+
+          <small className="text-danger">
+            {errors.mobile}
+          </small>
+
         </div>
-      ))}
 
-      <button
-        className="btn btn-secondary mb-2"
-        onClick={addEdu}
-      >
-        + Add Education
-      </button>
+        <div className="mb-3">
 
-      <button
-        className="btn btn-primary"
-        onClick={saveProfile}
-      >
-        Update Profile
-      </button>
-       <br></br>
-        <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-        Back
-      </button>
+          <input
+            className="form-control"
+            placeholder="1234-5678-9012"
+            name="aadhaar"
+            value={profile.aadhaar}
+            onChange={handleChange}
+          />
 
+          <small className="text-danger">
+            {errors.aadhaar}
+          </small>
+
+        </div>
+
+        <div className="mb-3">
+
+          <input
+            type="date"
+            className="form-control"
+            name="dob"
+            value={profile.dob}
+            onChange={handleChange}
+          />
+
+          <small className="text-danger">
+            {errors.dob}
+          </small>
+
+        </div>
+
+        <h4 className="mt-4">
+          Education Details
+        </h4>
+
+        {profile.education.map((item, index) => (
+
+          <div
+            key={index}
+            className="border p-3 rounded mb-3"
+          >
+
+            <input
+              className="form-control mb-2"
+              placeholder="Degree"
+              name="degree"
+              value={item.degree}
+              onChange={(e) =>
+                handleEducation(index, e)
+              }
+            />
+
+            <small className="text-danger">
+              {errors[`degree${index}`]}
+            </small>
+
+            <input
+              className="form-control mb-2"
+              placeholder="Grade"
+              name="grade"
+              value={item.grade}
+              onChange={(e) =>
+                handleEducation(index, e)
+              }
+            />
+
+            <small className="text-danger">
+              {errors[`grade${index}`]}
+            </small>
+
+            <input
+              className="form-control mb-2"
+              placeholder="Year"
+              name="year"
+              value={item.year}
+              onChange={(e) =>
+                handleEducation(index, e)
+              }
+            />
+
+            <small className="text-danger">
+              {errors[`year${index}`]}
+            </small>
+
+
+            {profile.education.length > 0 && (
+              <button
+                className="btn btn-danger btn-sm mt-2"
+                onClick={() => updateEducation(index)}
+              >
+                Update
+              </button>
+            )}
+
+
+            {profile.education.length > 1 && (
+              <button
+                className="btn btn-danger btn-sm mt-2"
+                onClick={() =>
+                  removeEducation(index)
+                }
+              >
+                Remove
+              </button>
+            )}
+
+          </div>
+
+        ))}
+
+        <button
+          className="btn btn-secondary mb-3"
+          onClick={addEducation}
+        >
+          + Add Education
+        </button>
+
+        <button
+          className="btn btn-primary"
+          onClick={updateProfile}
+        >
+          Update Profile
+        </button>
+
+      </div>
+
+     <button onClick={() => navigate(-1)}>Back</button>
     </div>
   );
 };
-
 export default MyProfile;
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Register = () => {
 
   const handleRegister = () => {
     if (!user.username || !user.email || !user.password) {
-      return alert("Please fill all fields");
+      return toast.error("Please fill all fields");
     }
 
     const users =
@@ -30,7 +31,7 @@ const Register = () => {
     );
 
     if (exists) {
-      return alert("Email already registered");
+      return toast.error("Email already registered");
     }
 
     users.push(user);
@@ -40,7 +41,7 @@ const Register = () => {
       JSON.stringify(users)
     );
 
-    alert("Registration Successful");
+    toast.success("Registration Successful");
 
     navigate("/");
   };
