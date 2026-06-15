@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {BrowserRouter,Routes,Route} from "react-router-dom"
 import Login from "./components/Login";
+import ManageProfile from "./components/ManageProfile";
 
 function App() {
 
@@ -12,6 +13,7 @@ return(
     <Routes>
       <Route path="/" element={<Signup />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/manage-profile" element={<ManageProfile />} />
     </Routes>
   </BrowserRouter>
 )
