@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 
 const Signup = () => {
-  const [user, setUser] = useState({username: "",email: "",password: ""});
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
   const ChangeUser = (e) => {
     const { name, value } = e.target;
@@ -10,26 +14,59 @@ const Signup = () => {
       [name]: value,
     }));
   };
+
   const SignupUser = () => {
     localStorage.setItem("user", JSON.stringify(user));
     alert("User data saved successfully!");
-    setUser({ username: "",email: "",password: ""});
+    setUser({
+      username: "",
+      email: "",
+      password: "",
+    });
   };
 
   return (
-    <div style={{ width: "300px", margin: "100px auto" }}>
-      <h2>Signup</h2>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card p-4 shadow" style={{ width: "350px" }}>
+        <h2 className="text-center mb-4">Signup</h2>
 
-      <input type="text" name="username" placeholder="Username" value={user.username} onChange={ChangeUser}/>
-      <br />
-      <br />
-      <input type="email" name="email" placeholder="Email" value={user.email} onChange={ChangeUser} />
-      <br />
-      <br />
-      <input type="password"  name="password" placeholder="Password" value={user.password} onChange={ChangeUser} />
-      <br />
-      <br />
-      <button onClick={SignupUser}>Signup</button>
+        <div className="mb-3">
+          <input
+            type="text"
+            name="username"
+            className="form-control"
+            placeholder="Username"
+            value={user.username}
+            onChange={ChangeUser}
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            placeholder="Email"
+            value={user.email}
+            onChange={ChangeUser}
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="password"
+            name="password"
+            className="form-control"
+            placeholder="Password"
+            value={user.password}
+            onChange={ChangeUser}
+          />
+        </div>
+
+        <button className="btn btn-primary w-100" onClick={SignupUser}>
+          Signup
+        </button>
+      </div>
     </div>
   );
 };
