@@ -1,37 +1,69 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 
 const Signup = () => {
-  const usernameRef = useRef(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const ChangeUser = (e) => {
+    const { name, value } = e.target;
+
+    setUser((pre) => ({
+      ...pre,
+      [name]: value,
+    }));
+  };
 
   const SignupUser = () => {
-    const user = {
-      username: usernameRef.current.value,
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
-    };
-
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("User data saved successfully!");
-    usernameRef.current.value = "";
-    emailRef.current.value = "";
-    passwordRef.current.value = "";
+
+    setUser({
+      username: "",
+      email: "",
+      password: "",
+    });
   };
 
   return (
-    <div>
-      <input type="text" placeholder="Username" ref={usernameRef} />
-      <br />
-      <br/>
+    <div style={{ width: "300px", margin: "100px auto" }}>
+      <h2>Signup</h2>
 
-      <input type="email" placeholder="Email" ref={emailRef} />
-      <br />
-      <br/>
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value={user.username}
+        onChange={ChangeUser}
+      />
 
-      <input type="password" placeholder="Password" ref={passwordRef} />
-      <br /><br/>
+      <br />
+      <br />
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={user.email}
+        onChange={ChangeUser}
+      />
+
+      <br />
+      <br />
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={user.password}
+        onChange={ChangeUser}
+      />
+
+      <br />
+      <br />
 
       <button onClick={SignupUser}>Signup</button>
     </div>
