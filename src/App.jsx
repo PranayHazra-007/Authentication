@@ -1,24 +1,40 @@
 import React from "react";
-import Signup from "./components/Signup";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import HomePage from "./pages/HomePage";
+import MyProfile from "./pages/MyProfile";
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import {BrowserRouter,Routes,Route} from "react-router-dom"
-import Login from "./components/Login";
-import ManageProfile from "./components/ManageProfile";
 
-function App() {
+const PrivateRoute = ({ children }) => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-return(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/manage-profile" element={<ManageProfile />} />
-    </Routes>
-  </BrowserRouter>
-)
+  return currentUser ? children : <Navigate to="/" />;
+};
 
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+  path="/home"
+  element={
+    <PrivateRoute>
+      <HomePage />
+    </PrivateRoute>
+  }
+>
+  <Route path="profile" element={<MyProfile />} />
+</Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
-}
+export default App;
 
-export default App
