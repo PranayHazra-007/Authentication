@@ -25,28 +25,58 @@ const ManageProfile = () => {
       ...profile,
       education: [...profile.education, { degree: "", grade: "", year: "" }],
     });
+const save = () => {
+  if (
+    !profile.firstName ||
+    !profile.lastName ||
+    !profile.gender ||
+    !profile.mobile ||
+    !profile.aadhaar ||
+    !profile.dob
+  ) {
+    return alert("Fill all fields");
+  }
 
-  const save = () => {
-    if (
-      !profile.firstName ||
-      !profile.lastName ||
-      !profile.gender ||
-      !profile.mobile ||
-      !profile.aadhaar ||
-      !profile.dob
-    ) {
-      return alert("Fill all fields");
+  if (!/^\+\d{1,3}\s\d{10}$/.test(profile.mobile))
+    return alert("Mobile: +91 9876543210");
+
+  if (!/^\d{4}-\d{4}-\d{4}$/.test(profile.aadhaar))
+    return alert("Aadhaar: 1234-5678-9012");
+
+  const currentUser =
+    JSON.parse(localStorage.getItem("currentUser")) || {};
+
+  const users =
+    JSON.parse(localStorage.getItem("users")) || [];
+
+  const updatedUsers = users.map((user) => {
+    if (user.email === currentUser.email) {
+      return {
+        ...user,
+        profile: profile,
+      };
     }
+    return user;
+  });
 
-    if (!/^\+\d{1,3}\s\d{10}$/.test(profile.mobile))
-      return alert("Mobile: +91 9876543210");
+  localStorage.setItem(
+    "users",
+    JSON.stringify(updatedUsers)
+  );
 
-    if (!/^\d{4}-\d{4}-\d{4}$/.test(profile.aadhaar))
-      return alert("Aadhaar: 1234-5678-9012");
-
-    localStorage.setItem("profile", JSON.stringify(profile));
-    alert("Profile Saved");
+  const updatedCurrentUser = {
+    ...currentUser,
+    profile,
   };
+
+  localStorage.setItem(
+    "currentUser",
+    JSON.stringify(updatedCurrentUser)
+  );
+  alert("Profile Updated Successfully");
+};
+
+
 
   return (
     <div className="container mt-5">
