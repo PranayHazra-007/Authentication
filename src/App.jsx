@@ -22,16 +22,13 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-  path="/home"
-  element={
-    <PrivateRoute>
-      <HomePage />
-    </PrivateRoute>
-  }
->
-  <Route path="profile" element={<MyProfile />} />
-</Route>
+        <Route path="/home" element={
+                    <PrivateRoute>
+                      <HomePage />
+                    </PrivateRoute>
+                             }>
+             <Route path="profile" element={<MyProfile />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
@@ -39,4 +36,3 @@ const App = () => {
 };
 
 export default App;
-

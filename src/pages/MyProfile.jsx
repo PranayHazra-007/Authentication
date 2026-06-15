@@ -125,6 +125,7 @@ const MyProfile = () => {
       ...currentUser,
       profile,
     };
+    console.log("Updated Current User:", updatedCurrent);
 
     localStorage.setItem(
       "currentUser",
@@ -146,14 +147,6 @@ const MyProfile = () => {
     );
 
     toast.success("Profile Updated Successfully");
-  };
-  const updateEducation = (index) => { 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-     const updatedCurrentUser = { ...currentUser, profile, }; 
-     localStorage.setItem( "currentUser", JSON.stringify(updatedCurrentUser) );
-     const updatedUsers = users.map((user) => { if (user.email === currentUser.email) { return { ...user, profile, }; } return user; });
-      localStorage.setItem( "users", JSON.stringify(updatedUsers) );
-       toast.success(`Education ${index + 1} Updated Successfully`);
   };
 
   return (
@@ -318,16 +311,6 @@ const MyProfile = () => {
             <small className="text-danger">
               {errors[`year${index}`]}
             </small>
-
-
-            {profile.education.length > 0 && (
-              <button
-                className="btn btn-danger btn-sm mt-2"
-                onClick={() => updateEducation(index)}
-              >
-                Update
-              </button>
-            )}
 
 
             {profile.education.length > 1 && (
