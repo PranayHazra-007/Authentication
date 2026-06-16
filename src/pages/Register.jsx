@@ -43,7 +43,7 @@ const Register = () => {
 
     toast.success("Registration Successful");
 
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -113,7 +113,7 @@ const Register = () => {
         <p className="text-center mt-3 mb-0">
           Already have an account?{" "}
           <Link
-            to="/"
+            to="/login"
             className="text-decoration-none fw-bold"
           >
             Login

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import toast from "react-hot-toast";
+import Navbar from "../components/Navbar";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -32,6 +33,8 @@ const ProductDetails = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="container mt-5">
       <div className="card shadow p-4">
 
@@ -88,6 +91,7 @@ const ProductDetails = () => {
 
       </div>
     </div>
+    </>
   );
 };
 

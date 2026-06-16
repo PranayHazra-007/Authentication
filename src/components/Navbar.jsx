@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 const Navbar = () => {
@@ -9,13 +10,14 @@ const Navbar = () => {
   const currentUser =
     JSON.parse(localStorage.getItem("currentUser")) || {};
 
+
   const logout = () => {
     localStorage.removeItem("currentUser");
     navigate("/");
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <nav className="navbar navbar-expand-lg navbar-dark sticky-top bg-dark px-4">
 
       <h4 className="navbar-brand mb-0">
         Profile App
@@ -29,7 +31,13 @@ const Navbar = () => {
 
         <button
           className="btn btn-primary me-2"
-          onClick={() => navigate("/home/profile")}
+          onClick={() => {
+            if (!currentUser) {
+              navigate(`/login`);
+            }else{
+              toast.error("Please log in to access your profile.");
+              navigate("/login")}
+          }}
         >
           My Profile
         </button>

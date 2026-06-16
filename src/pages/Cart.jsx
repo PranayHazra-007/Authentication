@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Navbar from "../components/Navbar";
 
 const Cart = () => {
   const {
@@ -31,6 +32,7 @@ const Cart = () => {
   };
 
   return (
+    <><Navbar/>
     <div className="container mt-4">
       <h2 className="mb-4">My Cart</h2>
 
@@ -120,6 +122,7 @@ const Cart = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 

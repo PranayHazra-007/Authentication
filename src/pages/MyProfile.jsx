@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import toast from "react-hot-toast";
+import Navbar from "../components/Navbar";
 const MyProfile = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const navigate = useNavigate();
@@ -203,6 +204,8 @@ const removeSubject = (eduIndex, subIndex) => {
   };
 
   return (
+   <>
+   <Navbar/>
     <div className="container mt-5 mb-5">
 
       <div
@@ -441,6 +444,7 @@ const removeSubject = (eduIndex, subIndex) => {
 
      <button onClick={() => navigate(-1)}>Back</button>
     </div>
+   </>
   );
 };
 export default MyProfile;

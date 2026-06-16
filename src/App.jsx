@@ -26,23 +26,23 @@ const App = () => {
       <Toaster position="top-center" reverseOrder={false}/>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />}/>
-        {/* Private Routes */}
-        <Route path="/home" element={
-            <PrivateRoute>
+     
+        <Route path="/" element={
+            
               <HomePage />
-            </PrivateRoute>}/>
+          }/>
 
         <Route path="/details/:id" element={
-            <PrivateRoute>
+          
               <ProductDetails />
-            </PrivateRoute> }/>
+        }/>
 
         <Route path="/cart" element={
-            <PrivateRoute>
+       
               <Cart />
-            </PrivateRoute>}/>
+       }/>
 
         <Route path="/profile" element={
             <PrivateRoute>
