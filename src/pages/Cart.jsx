@@ -23,7 +23,7 @@ const Cart = () => {
 
     if (!currentUser) {
       toast.error("Please Login First");
-      navigate("/");
+      navigate("/login");
       return;
     }
 

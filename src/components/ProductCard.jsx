@@ -6,7 +6,6 @@ import { CartContext } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext);
- addToCart(product);
 
   return (
     <div className="col-md-4 col-lg-3 mb-4">
@@ -17,34 +16,20 @@ const ProductCard = ({ product }) => {
             src={product.thumbnail}
             className="card-img-top"
             alt={product.title}
-            style={{
-              height: "200px",
-              objectFit: "cover",
-              cursor: "pointer",
-            }}
           />
         </Link>
 
         <div className="card-body d-flex flex-column">
-          <h5 className="card-title">
-            {product.title}
-          </h5>
-
-          <p className="card-text text-muted">
-            {product.brand}
-          </p>
-
-          <h6 className="text-success">
-            ₹{product.price}
-          </h6>
-
-          <p>
-            {product.rating}
-          </p>
+          <h5>{product.title}</h5>
+          <p>{product.brand}</p>
+          <h6>₹{product.price}</h6>
 
           <button
             className="btn btn-primary mt-auto"
-            onClick={addToCart}
+            onClick={() => {
+              addToCart(product);
+              toast.success("Added to cart!");
+            }}
           >
             Add To Cart
           </button>
