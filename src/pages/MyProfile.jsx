@@ -18,10 +18,25 @@ const MyProfile = () => {
         degree: "",
         grade: "",
         year: "",
+        subjects: [""],
       },
     ],
   });
 
+  useEffect(() => {
+  if (currentUser && currentUser.profile) {
+    const updatedEducation =
+      currentUser.profile.education.map((edu) => ({
+        ...edu,
+        subjects: edu.subjects || [""],
+      }));
+
+    setProfile({
+      ...currentUser.profile,
+      education: updatedEducation,
+    });
+  }
+}, []);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -61,6 +76,7 @@ const MyProfile = () => {
           degree: "",
           grade: "",
           year: "",
+          subjects: [""],
         },
       ],
     });
@@ -68,6 +84,46 @@ const MyProfile = () => {
     toast.error("You can only add up to 3 education entries.");
   }
   };
+  const handleSubjectChange = (eduIndex, subIndex, value) => {
+  const temp = [...profile.education];
+  if (!temp[eduIndex].subjects) {
+    temp[eduIndex].subjects = [""];
+  }
+
+  temp[eduIndex].subjects[subIndex] = value;
+
+  setProfile({
+    ...profile,
+    education: temp,
+  });
+};
+const addSubject = (eduIndex) => {
+  const temp = [...profile.education];
+
+  if (!temp[eduIndex].subjects) {
+    temp[eduIndex].subjects = [""];
+  }
+
+  temp[eduIndex].subjects.push("");
+
+  setProfile({
+    ...profile,
+    education: temp,
+  });
+};
+const removeSubject = (eduIndex, subIndex) => {
+  const temp = [...profile.education];
+
+  if (temp[eduIndex].subjects) {
+    temp[eduIndex].subjects.splice(subIndex, 1);
+  }
+
+  setProfile({
+    ...profile,
+    education: temp,
+  });
+};
+
 
   const removeEducation = (index) => {
     const temp = [...profile.education];
@@ -127,10 +183,7 @@ const MyProfile = () => {
     };
     console.log("Updated Current User:", updatedCurrent);
 
-    localStorage.setItem(
-      "currentUser",
-      JSON.stringify(updatedCurrent)
-    );
+    localStorage.setItem("currentUser", JSON.stringify(updatedCurrent));
 
     const users =
       JSON.parse(localStorage.getItem("users")) || [];
@@ -306,7 +359,49 @@ const MyProfile = () => {
               onChange={(e) =>
                 handleEducation(index, e)
               }
+              
             />
+            <h6 className="mt-3">Subjects</h6>
+{(item.subjects || [""]).map((subject, subIndex) => (
+  <div
+    key={subIndex}
+    className="d-flex gap-2 mb-2"
+  >
+    <input
+      type="text"
+      className="form-control"
+      placeholder="Subject Name"
+      value={subject}
+      onChange={(e) =>
+        handleSubjectChange(
+          index,
+          subIndex,
+          e.target.value
+        )
+      }
+    />
+
+    {(item.subjects || [""]).length > 0 && (
+      <button
+        className="btn btn-danger"
+        type="button"
+        onClick={() =>
+          removeSubject(index, subIndex)
+        }
+      >
+        ×
+      </button>
+    )}
+  </div>
+))}
+
+<button
+  type="button"
+  className="btn btn-success btn-sm mt-2"
+  onClick={() => addSubject(index)}
+>
+  + Add Subject
+</button>
 
             <small className="text-danger">
               {errors[`year${index}`]}
