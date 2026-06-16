@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -31,9 +33,9 @@ const Navbar = () => {
         >
           My Profile
         </button>
-
+        <Link to="/cart" className="btn btn-primary ms-3">Cart</Link>
         <button
-          className="btn btn-danger"
+          className="btn btn-danger ms-3"
           onClick={logout}
         >
           Logout

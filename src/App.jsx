@@ -1,35 +1,97 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
 import { Toaster } from "react-hot-toast";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
 import MyProfile from "./pages/MyProfile";
-import 'bootstrap/dist/css/bootstrap.min.css';  
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-const PrivateRoute = ({ children }) => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+import PrivateRoute from "./components/PrivateRoute";
 
-  return currentUser ? children : <Navigate to="/" />;
-};
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const App = () => {
   return (
-    
     <BrowserRouter>
-     <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
+
       <Routes>
+
+        {/* Public Routes */}
+
         <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/home" element={
-                    <PrivateRoute>
-                      <HomePage />
-                    </PrivateRoute>
-                             }>
-             <Route path="profile" element={<MyProfile />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        {/* Private Routes */}
+
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <HomePage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/details/:id"
+          element={
+            <PrivateRoute>
+              <ProductDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <MyProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+  path="/cart"
+  element={
+    <PrivateRoute>
+      <Cart />
+    </PrivateRoute>
+  }
+/>
+
+        {/* Invalid Route */}
+
+        <Route
+          path="*"
+          element={<Navigate to="/" />}
+        />
+
       </Routes>
     </BrowserRouter>
   );
