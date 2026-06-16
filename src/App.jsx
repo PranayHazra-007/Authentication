@@ -23,74 +23,34 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 const App = () => {
   return (
     <BrowserRouter>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
-
+      <Toaster position="top-center" reverseOrder={false}/>
       <Routes>
-
         {/* Public Routes */}
-
         <Route path="/" element={<Login />} />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
+        <Route path="/register" element={<Register />}/>
         {/* Private Routes */}
-
-        <Route
-          path="/home"
-          element={
+        <Route path="/home" element={
             <PrivateRoute>
               <HomePage />
-            </PrivateRoute>
-          }
-        />
+            </PrivateRoute>}/>
 
-        <Route
-          path="/details/:id"
-          element={
+        <Route path="/details/:id" element={
             <PrivateRoute>
               <ProductDetails />
-            </PrivateRoute>
-          }
-        />
+            </PrivateRoute> }/>
 
-        <Route
-          path="/cart"
-          element={
+        <Route path="/cart" element={
             <PrivateRoute>
               <Cart />
-            </PrivateRoute>
-          }
-        />
+            </PrivateRoute>}/>
 
-        <Route
-          path="/profile"
-          element={
+        <Route path="/profile" element={
             <PrivateRoute>
               <MyProfile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-  path="/cart"
-  element={
-    <PrivateRoute>
-      <Cart />
-    </PrivateRoute>
-  }
-/>
+            </PrivateRoute>}/>
 
         {/* Invalid Route */}
-
-        <Route
-          path="*"
-          element={<Navigate to="/" />}
-        />
+        <Route path="*" element={<Navigate to="/" />}/>
 
       </Routes>
     </BrowserRouter>

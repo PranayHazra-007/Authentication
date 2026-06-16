@@ -1,27 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import {useContext} from "react";
+import { CartContext } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
-  const addToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const exists = cart.find((item) => item.id === product.id);
-
-    if (exists) {
-      toast.error("Product already in cart");
-      return;
-    }
-
-    cart.push({
-      ...product,
-      quantity: 1,
-    });
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    toast.success("Product added to cart");
-  };
+  const { addToCart } = useContext(CartContext);
+ addToCart(product);
 
   return (
     <div className="col-md-4 col-lg-3 mb-4">
