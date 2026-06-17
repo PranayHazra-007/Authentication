@@ -12,16 +12,10 @@ import {
 } from "../services/api";
 
 const ManageProduct = () => {
-
   const [products, setProducts] = useState([]);
-
-  const [filteredProducts, setFilteredProducts] =
-    useState([]);
-
+  const [filteredProducts, setFilteredProducts] =useState([]);
   const [search, setSearch] = useState("");
-
-  const [editProduct, setEditProduct] =
-    useState(null);
+  const [editProduct, setEditProduct] =useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -35,9 +29,7 @@ const ManageProduct = () => {
       })
       .catch((err) => console.log(err));
   };
-
   // Search
-
   const handleSearch = (e) => {
     const value = e.target.value;
 
@@ -51,9 +43,7 @@ const ManageProduct = () => {
 
     setFilteredProducts(filtered);
   };
-
   // Add & Update
-
   const handleSubmit = async (formData) => {
     try {
 
@@ -106,15 +96,11 @@ const ManageProduct = () => {
 
     }
   };
-
   // Edit
-
   const handleEdit = (product) => {
     setEditProduct(product);
   };
-
   // Delete
-
   const handleDelete = async (id) => {
 
     if (
@@ -153,11 +139,8 @@ const ManageProduct = () => {
       <Navbar />
 
       <div className="container mt-4">
-
-        <h2 className="mb-4">
-          Manage Products
-        </h2>
-
+        <h2 className="mb-4"> Manage Products</h2>
+        
         {/* Search */}
 
         <div className="mb-4">
