@@ -43,6 +43,12 @@ const Navbar = () => {
         >
           My Profile
         </button>
+        {currentUser.email && (
+       <Link to="/manage-product" className="btn btn-success ms-3">
+           Manage Product
+        </Link>
+         )}
+         
         <Link to="/cart" className="btn btn-primary ms-3">Cart</Link>
         {
           currentUser.email ?(<button

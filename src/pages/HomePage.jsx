@@ -3,19 +3,29 @@ import Navbar from "../components/Navbar";
 import Search from "../components/Search";
 import CategoryFilter from "../components/CategoryFilter";
 import ProductCard from "../components/ProductCard";
-import {getProducts,getProductsByCategory,searchProducts} from "../services/api"
+import {
+  getProducts,
+  getProductsByCategory,
+  searchProducts,
+} from "../services/api";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = () => {
-    getProducts().then((res) => {
-      setProducts(res.data.products);
-    })
+    getProducts()
+      .then((res) => {
+        setProducts(res.data.products);
+        setCurrentPage(1);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -23,9 +33,11 @@ const HomePage = () => {
     if (category === "") {
       fetchProducts();
     } else {
-      getProductsByCategory(category).then((res) => {
-        setProducts(res.data.products);
-      })
+      getProductsByCategory(category)
+        .then((res) => {
+          setProducts(res.data.products);
+          setCurrentPage(1);
+        })
         .catch((err) => console.log(err));
     }
   };
@@ -34,29 +46,34 @@ const HomePage = () => {
     if (searchText.trim() === "") {
       fetchProducts();
     } else {
-      searchProducts(searchText).then((res) => {
-        setProducts(res.data.products);
-      })
+      searchProducts(searchText)
+        .then((res) => {
+          setProducts(res.data.products);
+          setCurrentPage(1);
+        })
         .catch((err) => console.log(err));
     }
   };
 
-  // return (
-  //   <>
-  //     <Navbar />
+  // Pagination Logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct =
+    indexOfLastProduct - productsPerPage;
 
-  //     <div className="container mt-4">
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // };
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  const totalPages = Math.ceil(
+    products.length / productsPerPage
+  );
 
   return (
     <>
       <Navbar />
 
       <div className="container mt-4">
-
         <Search onSearch={handleSearch} />
 
         <CategoryFilter
@@ -64,7 +81,7 @@ const HomePage = () => {
         />
 
         <div className="row mt-4">
-          {products.map((item) => (
+          {currentProducts.map((item) => (
             <ProductCard
               key={item.id}
               product={item}
@@ -72,6 +89,47 @@ const HomePage = () => {
           ))}
         </div>
 
+        {/* Pagination */}
+
+        <div className="d-flex justify-content-center mt-4 mb-5">
+
+          <button
+            className="btn btn-outline-primary me-2"
+            disabled={currentPage === 1}
+            onClick={() =>
+              setCurrentPage(currentPage - 1)
+            }
+          >
+            Previous
+          </button>
+
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              className={`btn mx-1 ${
+                currentPage === index + 1
+                  ? "btn-primary"
+                  : "btn-outline-primary"
+              }`}
+              onClick={() =>
+                setCurrentPage(index + 1)
+              }
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          <button
+            className="btn btn-outline-primary ms-2"
+            disabled={currentPage === totalPages}
+            onClick={() =>
+              setCurrentPage(currentPage + 1)
+            }
+          >
+            Next
+          </button>
+
+        </div>
       </div>
     </>
   );

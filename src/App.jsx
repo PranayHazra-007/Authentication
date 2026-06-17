@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-
+import {BrowserRouter,Routes,Route,Navigate} from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Login from "./pages/Login";
@@ -14,12 +8,13 @@ import HomePage from "./pages/HomePage";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import MyProfile from "./pages/MyProfile";
-
+import ManageProduct from "./pages/ManageProduct";
 import PrivateRoute from "./components/PrivateRoute";
+import Checkout from "./pages/Checkout";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import Checkout from "./pages/Checkout";
+
 
 const App = () => {
   return (
@@ -40,9 +35,13 @@ const App = () => {
             <PrivateRoute>
               <MyProfile />
             </PrivateRoute>}/>
-            <Route path="/checkout" element={
+        <Route path="/checkout" element={
             <PrivateRoute>
               <Checkout />
+            </PrivateRoute>}/>
+        <Route path="/manage-product" element={
+            <PrivateRoute>
+              <ManageProduct />
             </PrivateRoute>}/>
 
 
