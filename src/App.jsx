@@ -19,6 +19,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Checkout from "./pages/Checkout";
 
 const App = () => {
   return (
@@ -29,25 +30,21 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />}/>
      
-        <Route path="/" element={
-            
-              <HomePage />
-          }/>
+        <Route path="/" element={<HomePage />}/>
 
-        <Route path="/details/:id" element={
-          
-              <ProductDetails />
-        }/>
+        <Route path="/details/:id" element={<ProductDetails />}/>
 
-        <Route path="/cart" element={
-       
-              <Cart />
-       }/>
+        <Route path="/cart" element={<Cart />}/>
 
         <Route path="/profile" element={
             <PrivateRoute>
               <MyProfile />
             </PrivateRoute>}/>
+            <Route path="/checkout" element={
+            <PrivateRoute>
+              <Checkout />
+            </PrivateRoute>}/>
+
 
         {/* Invalid Route */}
         <Route path="*" element={<Navigate to="/" />}/>

@@ -433,12 +433,21 @@ const removeSubject = (eduIndex, subIndex) => {
           + Add Education
         </button>
 
-        <button
+        {
+          (!currentUser.profile) ?(
+            <button
+          className="btn btn-primary"
+          onClick={updateProfile}
+        >
+          Create Profile
+        </button>
+          ):(<button
           className="btn btn-primary"
           onClick={updateProfile}
         >
           Update Profile
-        </button>
+        </button>)
+        }
 
       </div>
 

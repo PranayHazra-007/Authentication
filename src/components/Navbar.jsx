@@ -15,6 +15,14 @@ const Navbar = () => {
     localStorage.removeItem("currentUser");
     navigate("/");
   };
+  const myProfile=() => {
+            if (!currentUser.email) {
+              toast.error("Please log in to access your profile.");
+              navigate(`/login`);
+            }else{
+              
+              navigate("/profile")}
+          }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark sticky-top bg-dark px-4">
@@ -31,23 +39,26 @@ const Navbar = () => {
 
         <button
           className="btn btn-primary me-2"
-          onClick={() => {
-            if (!currentUser) {
-              navigate(`/login`);
-            }else{
-              toast.error("Please log in to access your profile.");
-              navigate("/login")}
-          }}
+          onClick={myProfile}
         >
           My Profile
         </button>
         <Link to="/cart" className="btn btn-primary ms-3">Cart</Link>
-        <button
+        {
+          currentUser.email ?(<button
           className="btn btn-danger ms-3"
           onClick={logout}
         >
           Logout
+        </button>):(
+          <button
+          className="btn btn-primary ms-3"
+          onClick={()=>navigate("/login")}
+        >
+          Login
         </button>
+        )
+        }
 
       </div>
 

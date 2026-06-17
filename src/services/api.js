@@ -13,5 +13,6 @@ export const searchProducts = (q) =>
 export const getCategories = () =>
   axios.get(`${BASE_URL}/categories`);
 
+
 export const getProductsByCategory = (category) =>
   axios.get(`${BASE_URL}/category/${category}`);

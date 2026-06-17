@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {getCategories} from "../services/api"
 
 const CategoryFilter = ({ onCategoryChange }) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("https://dummyjson.com/products/categories")
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
+    getCategories().then((res) => {
+      setCategories(res.data);
+    });
   }, []);
 
   return (

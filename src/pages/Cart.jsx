@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 
@@ -105,12 +105,9 @@ const Cart = () => {
           <div className="mt-4">
             <h3>Total: ₹{getTotal()}</h3>
 
-            <button
-              className="btn btn-primary me-3"
-              onClick={handleCheckout}
-            >
+            <Link to="/checkout" className="btn btn-primary me-3">
               Checkout
-            </button>
+            </Link>
 
             <button
               className="btn btn-danger"

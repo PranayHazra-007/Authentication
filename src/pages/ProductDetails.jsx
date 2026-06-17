@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
+import {getProduct} from "../services/api"
 import { useParams } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import toast from "react-hot-toast";
@@ -13,10 +13,9 @@ const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    axios
-      .get(`https://dummyjson.com/products/${id}`)
-      .then((res) => setProduct(res.data))
-      .catch((err) => console.log(err));
+    getProduct(id).then((res) => {
+      setProduct(res.data);
+    });
   }, [id]);
 
   if (!product) {
