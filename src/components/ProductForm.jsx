@@ -80,7 +80,12 @@ const ProductForm = ({
     setLoading(false);
   }
 };
-
+const removeImage = (index) => {
+  setFormData((prev) => ({
+    ...prev,
+    images: prev.images.filter((_, i) => i !== index),
+  }));
+};
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -180,13 +185,56 @@ const ProductForm = ({
           />
         </div>
 
-        {formData.images && formData.images.length > 0 && (
-          <div className="mb-3">
-            <small className="text-success">
-              Images: {formData.images.join(", ")}
-            </small>
-          </div>
-        )}
+        {formData.images.length > 0 && (
+  <div className="mb-3">
+    <label className="form-label">
+      Image Preview
+    </label>
+
+    <div className="d-flex flex-wrap gap-3">
+      {formData.images.map((img, index) => (
+        <div
+          key={index}
+          style={{
+            position: "relative",
+            width: "100px",
+            height: "100px",
+          }}
+        >
+          <img
+            src={img}
+            alt="preview"
+            width="100"
+            height="100"
+            style={{
+              objectFit: "cover",
+              borderRadius: "8px",
+              border: "1px solid #ddd",
+            }}
+          />
+
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            style={{
+              position: "absolute",
+              top: "-8px",
+              right: "-8px",
+              borderRadius: "50%",
+              width: "25px",
+              height: "25px",
+              padding: "0",
+              lineHeight: "20px",
+            }}
+            onClick={() => removeImage(index)}
+          >
+            ×
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
         <button
           type="submit"
