@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { uploadImage } from "../services/api";
+import { uploadImage, getCategories } from "../services/api";
 
 const ProductForm = ({
   onSubmit,
@@ -12,8 +12,9 @@ const ProductForm = ({
     price: "",
     category: "",
     description: "",
-    thumbnail: "",
+    images:[]
   });
+  const [categories, setCategories] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +25,7 @@ const ProductForm = ({
         price: editProduct.price || "",
         category: editProduct.category || "",
         description: editProduct.description || "",
-        thumbnail: editProduct.thumbnail || "",
+        images: editProduct.images || [],
       });
     } else {
       setFormData({
@@ -32,10 +33,17 @@ const ProductForm = ({
         price: "",
         category: "",
         description: "",
-        thumbnail: "",
+        images: [],
       });
     }
   }, [editProduct]);
+  useEffect(() => {
+  getCategories()
+    .then((res) => {
+      setCategories(res.data);
+    })
+    .catch((err) => console.log(err));
+}, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -45,30 +53,33 @@ const ProductForm = ({
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+  const files = Array.from(e.target.files);
 
-    if (!file) return;
+  if (files.length === 0) return;
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const res = await uploadImage(file);
-
-      setFormData((prev) => ({
-        ...prev,
-        thumbnail: file.name,
-      }));
-
-      console.log(res.data);
-
-      toast.success("Image uploaded successfully");
-    } catch (err) {
-      console.log(err);
-      toast.error("Image upload failed");
-    } finally {
-      setLoading(false);
+    for (const file of files) {
+      await uploadImage(file);
     }
-  };
+
+    setFormData((prev) => ({
+      ...prev,
+      images: [
+        ...prev.images,
+        ...files.map((file) => URL.createObjectURL(file)),
+      ],
+    }));
+
+    toast.success("Images uploaded successfully");
+  } catch (err) {
+    console.log(err);
+    toast.error("Image upload failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -90,7 +101,7 @@ const ProductForm = ({
         price: "",
         category: "",
         description: "",
-        thumbnail: "",
+        images: [],
       });
     }
   };
@@ -132,18 +143,15 @@ const ProductForm = ({
         </div>
 
         <div className="mb-3">
-          <label className="form-label">
-            Category
-          </label>
-
-          <input
-            type="text"
-            className="form-control"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-          />
-        </div>
+          <label className="form-label">Category</label>
+            <select className="form-select" name="category" value={formData.category} onChange={handleChange}>
+                 <option value="">Select Category</option>
+                 {categories.map((category, index) => (
+                  <option key={index} value={category.slug || category}>
+                     {category.name || category}
+                  </option>))}
+             </select>
+           </div>
 
         <div className="mb-3">
           <label className="form-label">
@@ -161,20 +169,21 @@ const ProductForm = ({
 
         <div className="mb-3">
           <label className="form-label">
-            Upload Image
+            Upload Images
           </label>
 
           <input
             type="file"
             className="form-control"
+            multiple
             onChange={handleImageUpload}
           />
         </div>
 
-        {formData.thumbnail && (
+        {formData.images && formData.images.length > 0 && (
           <div className="mb-3">
             <small className="text-success">
-              Image: {formData.thumbnail}
+              Images: {formData.images.join(", ")}
             </small>
           </div>
         )}

@@ -8,20 +8,41 @@ const ProductTable = ({
 }) => {
   const columns = [
     {
-      name: "Image",
-      cell: (row) => (
+  name: "Image",
+  cell: (row) => (
+    <div className="d-flex gap-1 flex-wrap">
+      {row.images && row.images.length > 0 ? (
+        row.images.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt="product"
+            width="50"
+            height="50"
+            style={{
+              objectFit: "cover",
+              borderRadius: "5px",
+              border: "1px solid #ddd",
+            }}
+          />
+        ))
+      ) : (
         <img
           src={row.thumbnail}
-          alt={row.title}
-          width="60"
-          height="60"
+          alt="product"
+          width="50"
+          height="50"
           style={{
             objectFit: "cover",
             borderRadius: "5px",
+            border: "1px solid #ddd",
           }}
         />
-      ),
-    },
+      )}
+    </div>
+  ),
+  width: "200px",
+},
 
     {
       name: "Title",
