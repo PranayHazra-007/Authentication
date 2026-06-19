@@ -1,18 +1,32 @@
-import React, { useContext } from "react";
-import { CartContext } from "../context/CartContext";
+import React from "react";
+// import { CartContext } from "../context/CartContext";
 import { useNavigate,Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
+import {useDispatch,useSelector} from "react-redux";
+import {
+  removeFromCart,
+  increaseQty,
+  decreaseQty,
+  clearCart,
+} from "../redux/slices/cartSlice";
 
 const Cart = () => {
-  const {
-    cartItems,
-    removeFromCart,
-    increaseQty,
-    decreaseQty,
-    clearCart,
-    getTotal,
-  } = useContext(CartContext);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const total = cartItems.reduce(
+  (sum, item) => sum + item.price * item.quantity,
+  0
+);
+
+  // const {
+  //   cartItems,
+  //   removeFromCart,
+  //   increaseQty,
+  //   decreaseQty,
+  //   clearCart,
+  //   getTotal,
+  // } = useContext(CartContext);
 
   const navigate = useNavigate();
 
@@ -28,7 +42,7 @@ const Cart = () => {
     }
 
     toast.success("Checkout Successful!");
-    clearCart();
+    dispatch(clearCart());
   };
 
   return (
@@ -64,7 +78,7 @@ const Cart = () => {
                   <button
                     className="btn btn-danger me-2"
                     onClick={() =>
-                      decreaseQty(item.id)
+                      dispatch(decreaseQty(item.id))
                     }
                   >
                     -
@@ -75,7 +89,7 @@ const Cart = () => {
                   <button
                     className="btn btn-success ms-2"
                     onClick={() =>
-                      increaseQty(item.id)
+                      dispatch(increaseQty(item.id))
                     }
                   >
                     +
@@ -91,7 +105,7 @@ const Cart = () => {
                   <button
                     className="btn btn-warning"
                     onClick={() =>
-                      removeFromCart(item.id)
+                      dispatch(removeFromCart(item.id))
                     }
                   >
                     Remove
@@ -103,7 +117,7 @@ const Cart = () => {
           ))}
 
           <div className="mt-4">
-            <h3>Total: ₹{getTotal()}</h3>
+            <h3>Total: ₹{total}</h3>
 
             <Link to="/checkout" className="btn btn-primary me-3">
               Checkout
@@ -111,7 +125,7 @@ const Cart = () => {
 
             <button
               className="btn btn-danger"
-              onClick={clearCart}
+              onClick={() => dispatch(clearCart())}
             >
               Clear Cart
             </button>

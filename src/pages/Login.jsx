@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slices/cartSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [login, setLogin] = useState({
     email: "",
@@ -35,6 +38,7 @@ const Login = () => {
       "currentUser",
       JSON.stringify(user)
     );
+    dispatch(setUser(user));
 
     toast.success("Login Successful");
 

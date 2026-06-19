@@ -1,33 +1,38 @@
-import React, { useEffect, useState, useContext } from "react";
-import {getProduct} from "../services/api"
+import React from "react";
+// import {getProduct} from "../services/api"
 import { useParams } from "react-router-dom";
-import { CartContext } from "../context/CartContext";
+// import { CartContext } from "../context/CartContext";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
+import {useSelector,useDispatch} from "react-redux";
+import {addToCart} from "../redux/slices/cartSlice"
 
 const ProductDetails = () => {
   const { id } = useParams();
+  // const [product, setProduct] = useState(null);
+  // const { addToCart } = useContext(CartContext);
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state.product.products.find((p) => p.id === Number(id)));
 
-  const [product, setProduct] = useState(null);
-
-  const { addToCart } = useContext(CartContext);
-
-  useEffect(() => {
-    getProduct(id).then((res) => {
-      setProduct(res.data);
-    });
-  }, [id]);
+  // useEffect(() => {
+  //   getProduct(id).then((res) => {
+  //     setProduct(res.data);
+  //   });
+  // }, [id]);
 
   if (!product) {
     return (
-      <h2 className="text-center mt-5">
-        Loading...
-      </h2>
+       <>
+        <Navbar />
+        <h2 className="text-center mt-5">
+          Product Not Found
+        </h2>
+      </>
     );
   }
 
   const handleAddToCart = () => {
-    addToCart(product);
+    dispatch(addToCart(product));
     toast.success("Product Added To Cart");
   };
 

@@ -1,16 +1,13 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ children }) => {
-  const currentUser = JSON.parse(
-    localStorage.getItem("currentUser")
-  );
+  const reduxUser = useSelector((state) => state.cart.user);
+  const localUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = reduxUser || localUser;
 
-  if (!currentUser) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+  return currentUser ? (children) : (<Navigate to="/login" replace />);
 };
 
 export default PrivateRoute;

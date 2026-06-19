@@ -3,6 +3,9 @@ import Navbar from "../components/Navbar";
 import Search from "../components/Search";
 import CategoryFilter from "../components/CategoryFilter";
 import ProductCard from "../components/ProductCard";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "../redux/slices/productSlice";
 import {
   getProducts,
   getProductsByCategory,
@@ -10,7 +13,9 @@ import {
 } from "../services/api";
 
 const HomePage = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
+  const user = localStorage.getItem("user");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +28,7 @@ const HomePage = () => {
   const fetchProducts = () => {
     getProducts()
       .then((res) => {
-        setProducts(res.data.products);
+        dispatch(setProducts(res.data.products));
         setCurrentPage(1);
       })
       .catch((err) => console.log(err));
@@ -35,7 +40,7 @@ const HomePage = () => {
     } else {
       getProductsByCategory(category)
         .then((res) => {
-          setProducts(res.data.products);
+          dispatch(setProducts(res.data.products));
           setCurrentPage(1);
         })
         .catch((err) => console.log(err));
@@ -48,7 +53,7 @@ const HomePage = () => {
     } else {
       searchProducts(searchText)
         .then((res) => {
-          setProducts(res.data.products);
+          dispatch(setProducts(res.data.products));
           setCurrentPage(1);
         })
         .catch((err) => console.log(err));
@@ -71,7 +76,9 @@ const HomePage = () => {
 
   return (
     <>
-      <Navbar />
+      {user?.email && (
+        <Navbar />
+      )}
 
       <div className="container mt-4">
         <Search onSearch={handleSearch} />

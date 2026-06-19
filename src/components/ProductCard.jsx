@@ -1,15 +1,21 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { CartContext } from "../context/CartContext";
+// import { CartContext } from "../context/CartContext";
+import { useDispatch,useSelector } from "react-redux";
+import {addToCart,increaseQty,decreaseQty} from "../redux/slices/cartSlice";
 
 const ProductCard = ({ product }) => {
-  const {
-    cartItems,
-    addToCart,
-    increaseQty,
-    decreaseQty,
-  } = useContext(CartContext);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
+
+  // const {
+  //   cartItems,
+  //   addToCart,
+  //   increaseQty,
+  //   decreaseQty,
+  // } = useContext(CartContext);
+  
 
   // Check if product already exists in cart
   const cartItem = cartItems.find(
@@ -56,7 +62,8 @@ const ProductCard = ({ product }) => {
 
               <button
                 className="btn btn-danger"
-                onClick={() => decreaseQty(product.id)}
+                disabled={cartItem.quantity === 1}
+                onClick={() => dispatch(decreaseQty(product.id))}
               >
                 -
               </button>
@@ -67,7 +74,8 @@ const ProductCard = ({ product }) => {
 
               <button
                 className="btn btn-success"
-                onClick={() => increaseQty(product.id)}
+                disabled={cartItem.quantity >= product.stock}
+                onClick={() => dispatch(increaseQty(product.id))}
               >
                 +
               </button>
@@ -77,7 +85,7 @@ const ProductCard = ({ product }) => {
             <button
               className="btn btn-primary mt-auto"
               onClick={() => {
-                addToCart(product);
+                dispatch(addToCart(product));
                 toast.success("Added to Cart");
               }}
             >

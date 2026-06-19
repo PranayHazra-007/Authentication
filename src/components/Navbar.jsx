@@ -2,21 +2,24 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../redux/slices/cartSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const currentUser =
-    JSON.parse(localStorage.getItem("currentUser")) || {};
-
+  const user = useSelector((state) => state.cart.user);
+  const cartItems=useSelector((state) => state.cart.cartItems);
+  const currentUser=user || JSON.parse(localStorage.getItem("currentUser"));
 
   const logout = () => {
     localStorage.removeItem("currentUser");
+    dispatch(logoutUser());
     navigate("/");
   };
   const myProfile=() => {
-            if (!currentUser.email) {
+            if (!currentUser) {
               toast.error("Please log in to access your profile.");
               navigate(`/login`);
             }else{
@@ -34,7 +37,7 @@ const Navbar = () => {
       <div className="ms-auto d-flex align-items-center">
 
         <span className="text-white me-3">
-          Welcome, {currentUser.username}
+          Welcome, {currentUser?.username || "Guest"}
         </span>
 
         <button
@@ -43,15 +46,15 @@ const Navbar = () => {
         >
           My Profile
         </button>
-        {currentUser.email && (
+        {currentUser && (
        <Link to="/manage-product" className="btn btn-success ms-3">
            Manage Product
         </Link>
          )}
          
-        <Link to="/cart" className="btn btn-primary ms-3">Cart</Link>
+        <Link to="/cart" className="btn btn-primary ms-3">Cart{cartItems.length > 0 && ` (${cartItems.length})`}</Link>
         {
-          currentUser.email ?(<button
+          currentUser ?(<button
           className="btn btn-danger ms-3"
           onClick={logout}
         >

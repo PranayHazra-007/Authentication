@@ -75,6 +75,13 @@ const ProductForm = ({
     toast.success("Images uploaded successfully");
   } catch (err) {
     console.log(err);
+    setFormData((prev) => ({
+      ...prev,
+      images: [
+        ...prev.images,
+        ...files.map((file) => URL.createObjectURL(file)),
+      ],
+    }));
     toast.error("Image upload failed");
   } finally {
     setLoading(false);
@@ -173,16 +180,23 @@ const removeImage = (index) => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">
-            Upload Images
-          </label>
-
+          <label className="form-label">Upload Images</label>
           <input
             type="file"
             className="form-control"
             multiple
+            disabled={loading}
             onChange={handleImageUpload}
           />
+
+          {loading && (
+             <div className="text-center my-3">
+               <div className="spinner-border text-primary" role="status">
+                 <span className="visually-hidden">Loading...</span>
+               </div>
+                <p className="mt-2">Uploading Images...</p>
+             </div>
+           )}
         </div>
 
         {formData.images.length > 0 && (

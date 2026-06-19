@@ -3,9 +3,13 @@ import {useNavigate} from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../redux/slices/cartSlice";
 const MyProfile = () => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const user = useSelector((state) => state.cart.user);
+  const currentUser =user || JSON.parse(localStorage.getItem("currentUser"));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [profile, setProfile] = useState({
     firstName: "",
@@ -185,6 +189,7 @@ const removeSubject = (eduIndex, subIndex) => {
     console.log("Updated Current User:", updatedCurrent);
 
     localStorage.setItem("currentUser", JSON.stringify(updatedCurrent));
+    dispatch(setUser(updatedCurrent));
 
     const users =
       JSON.parse(localStorage.getItem("users")) || [];
@@ -434,7 +439,7 @@ const removeSubject = (eduIndex, subIndex) => {
         </button>
 
         {
-          (!currentUser.profile) ?(
+          (!currentUser?.profile) ?(
             <button
           className="btn btn-primary"
           onClick={updateProfile}
