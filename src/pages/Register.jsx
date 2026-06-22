@@ -22,6 +22,9 @@ const Register = () => {
     if (!user.username || !user.email || !user.password) {
       return toast.error("Please fill all fields");
     }
+    if (!user.email.endsWith("@gmail.com")) {
+      return toast.error("Only Gmail accounts allowed");
+    }
 
     const users =
       JSON.parse(localStorage.getItem("users")) || [];

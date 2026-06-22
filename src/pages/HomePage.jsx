@@ -14,8 +14,8 @@ import {
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.products);
-  const user = localStorage.getItem("user");
+  const products = useSelector((state) => state.product?.products || []);
+  const user = JSON.parse(localStorage.getItem("currentUser"));
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,6 +137,18 @@ const HomePage = () => {
           </button>
 
         </div>
+        {
+          !user?.email && (
+            <div className="text-center">
+              <span>
+              <p>Please log in to view products.</p> </span>
+              <button className="btn btn-primary" onClick={() => (window.location.href = "/login")}>
+                Log In
+              </button>
+             
+            </div>
+          )
+        }
       </div>
     </>
   );

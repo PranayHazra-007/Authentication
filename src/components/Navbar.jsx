@@ -53,6 +53,7 @@ const Navbar = () => {
          )}
          
         <Link to="/cart" className="btn btn-primary ms-3">Cart{cartItems.length > 0 && ` (${cartItems.length})`}</Link>
+        <Link to="/chat"className="btn btn-info ms-3">Chat</Link>
         {
           currentUser ?(<button
           className="btn btn-danger ms-3"

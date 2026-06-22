@@ -11,6 +11,7 @@ import MyProfile from "./pages/MyProfile";
 import ManageProduct from "./pages/ManageProduct";
 import PrivateRoute from "./components/PrivateRoute";
 import Checkout from "./pages/Checkout";
+import Chat from "./pages/Chat";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -43,6 +44,10 @@ const App = () => {
             <PrivateRoute>
               <ManageProduct />
             </PrivateRoute>}/>
+        <Route path="/chat" element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>}/>    
 
 
         {/* Invalid Route */}
