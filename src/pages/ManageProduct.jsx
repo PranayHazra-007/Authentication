@@ -24,8 +24,8 @@ const ManageProduct = () => {
   const fetchProducts = () => {
     getProducts()
       .then((res) => {
-        setProducts(res.products);
-        setFilteredProducts(res.products);
+        setProducts(res.data.products);
+        setFilteredProducts(res.data.products);
       })
       .catch((err) => console.log(err));
   };

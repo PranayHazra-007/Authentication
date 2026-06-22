@@ -50,7 +50,9 @@ const Navbar = () => {
        <Link to="/manage-product" className="btn btn-success ms-3">
            Manage Product
         </Link>
+        
          )}
+         <Link to="/kanban" className="btn btn-info ms-3">Kanban</Link>
          
         <Link to="/cart" className="btn btn-primary ms-3">Cart{cartItems.length > 0 && ` (${cartItems.length})`}</Link>
         <Link to="/chat"className="btn btn-info ms-3">Chat</Link>

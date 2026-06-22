@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/slices/cartSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 const Checkout = () => {
   const dispatch = useDispatch();

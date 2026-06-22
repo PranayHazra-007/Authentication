@@ -12,6 +12,7 @@ import ManageProduct from "./pages/ManageProduct";
 import PrivateRoute from "./components/PrivateRoute";
 import Checkout from "./pages/Checkout";
 import Chat from "./pages/Chat";
+import KanbanBoard from "./pages/KanbanBoard";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -47,7 +48,11 @@ const App = () => {
         <Route path="/chat" element={
             <PrivateRoute>
               <Chat />
-            </PrivateRoute>}/>    
+            </PrivateRoute>}/>   
+        <Route path="/kanban" element={
+            <PrivateRoute>
+              <KanbanBoard />
+            </PrivateRoute>}/> 
 
 
         {/* Invalid Route */}
