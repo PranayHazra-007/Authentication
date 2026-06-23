@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 import {useDispatch,useSelector} from "react-redux";
 import {addTask,updateTask,moveTaskForward,moveTaskBackward,updateRating,deleteTask} from "../redux/slices/kanbanSlice";
 
@@ -50,7 +51,19 @@ const KanbanBoard = () => {
   };
 
   const handleSubmit = () => {
-    if (!formData.caption.trim()) return;
+    if (!formData.caption.trim()) {
+      toast.error("Caption is required");
+      return;
+    }
+      if (formData.milestones.length === 0 || formData.milestones.some((m) => !m.name.trim() || !m.days)) {
+      toast.error("Milestones are required");
+       return;
+    }
+    if(!formData.startDate) {
+      toast.error("Start date is required");
+      return;
+    }
+
     if (editingId) {
       dispatch(updateTask({id: editingId,...formData}));
     } else {
@@ -72,6 +85,11 @@ const KanbanBoard = () => {
     })),
     });
   };
+  const removeMilestone = (index) => {
+    const updated= [...formData.milestones].filter((_, i) => i !== index);
+    // updated.splice(index, 1);
+    setFormData({...formData,milestones: updated});
+  }
 
   const renderTasks = (status) => {
     return tasks
@@ -248,7 +266,7 @@ const KanbanBoard = () => {
 
           <div className="row">
 
-            <div className="col-md-6">
+            <div >
               <label>
                 Start Date
               </label>
@@ -264,7 +282,7 @@ const KanbanBoard = () => {
               />
             </div>
 
-            <div className="col-md-6">
+            {/* <div className="col-md-6">
               <label>
                 End Date
               </label>
@@ -278,7 +296,7 @@ const KanbanBoard = () => {
                 }
                 onChange={handleChange}
               />
-            </div>
+            </div> */}
 
           </div>
 
@@ -331,6 +349,18 @@ const KanbanBoard = () => {
                   />
 
                 </div>
+                {
+                  formData.milestones.length > 1 && (
+                    <div className="col-md-12">
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => removeMilestone(index)}
+                      >
+                        Remove Milestone
+                      </button>
+                    </div>
+                  )
+                }
               </div>
             )
           )}

@@ -1,5 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
+const calculateEndDate = (startDate,milestones) => {
+  if (!startDate)   return "";
+
+  const totalDays = milestones.reduce((sum, item) => sum + Number(item.days || 0),0);
+  const date = new Date(startDate);
+  date.setDate(date.getDate() + totalDays);
+
+  return date.toISOString().split("T")[0];
+};
+
+
 const initialState = {
   tasks: [],
   taskCounter: 1,
@@ -19,7 +31,7 @@ const kanbanSlice = createSlice({
         shortDescription: action.payload.shortDescription,
         milestones: action.payload.milestones || [],
         startDate: action.payload.startDate,
-        endDate: action.payload.endDate,
+        endDate: calculateEndDate(action.payload.startDate, action.payload.milestones),
         rating: null,
         status: "todo",
       });
@@ -35,7 +47,7 @@ const kanbanSlice = createSlice({
         task.shortDescription = action.payload.shortDescription;
         task.milestones = action.payload.milestones;
         task.startDate = action.payload.startDate;
-        task.endDate = action.payload.endDate;
+        task.endDate = calculateEndDate(action.payload.startDate, action.payload.milestones);
       }
     },
     // Forward
