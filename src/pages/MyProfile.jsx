@@ -58,7 +58,6 @@ const MyProfile = () => {
       [name]: value,
     }));
   };
-
   const handleEducation = (index, e) => {
     const { name, value } = e.target;
 
@@ -70,7 +69,6 @@ const MyProfile = () => {
       education: temp,
     });
   };
-
   const addEducation = () => {
   if(profile.education.length < 3) {
     setProfile({
@@ -101,8 +99,8 @@ const MyProfile = () => {
     ...profile,
     education: temp,
   });
-};
-const addSubject = (eduIndex) => {
+  };
+  const addSubject = (eduIndex) => {
   const temp = [...profile.education];
 
   if (!temp[eduIndex].subjects) {
@@ -115,8 +113,8 @@ const addSubject = (eduIndex) => {
     ...profile,
     education: temp,
   });
-};
-const removeSubject = (eduIndex, subIndex) => {
+  };
+  const removeSubject = (eduIndex, subIndex) => {
   const temp = [...profile.education];
 
   if (temp[eduIndex].subjects) {
@@ -127,9 +125,7 @@ const removeSubject = (eduIndex, subIndex) => {
     ...profile,
     education: temp,
   });
-};
-
-
+  };
   const removeEducation = (index) => {
     const temp = [...profile.education];
     temp.splice(index, 1);
@@ -139,48 +135,46 @@ const removeSubject = (eduIndex, subIndex) => {
       education: temp,
     });
   };
+  // const validate = () => {
+  //   const err = {};
 
-  const validate = () => {
-    const err = {};
+  //   if (!profile.firstName.trim())
+  //     err.firstName = "First Name Required";
 
-    if (!profile.firstName.trim())
-      err.firstName = "First Name Required";
+  //   if (!profile.lastName.trim())
+  //     err.lastName = "Last Name Required";
 
-    if (!profile.lastName.trim())
-      err.lastName = "Last Name Required";
+  //   if (!profile.gender)
+  //     err.gender = "Select Gender";
 
-    if (!profile.gender)
-      err.gender = "Select Gender";
+  //   if (!/^\+\d{1,3}\s\d{10}$/.test(profile.mobile))
+  //     err.mobile = "Example: +91 9876543210";
 
-    if (!/^\+\d{1,3}\s\d{10}$/.test(profile.mobile))
-      err.mobile = "Example: +91 9876543210";
+  //   if (
+  //     !/^\d{4}-\d{4}-\d{4}$/.test(profile.aadhaar)
+  //   )
+  //     err.aadhaar = "Example: 1234-5678-9012";
 
-    if (
-      !/^\d{4}-\d{4}-\d{4}$/.test(profile.aadhaar)
-    )
-      err.aadhaar = "Example: 1234-5678-9012";
+  //   if (!profile.dob)
+  //     err.dob = "Select DOB";
 
-    if (!profile.dob)
-      err.dob = "Select DOB";
+  //   profile.education.forEach((item, index) => {
+  //     if (!item.degree)
+  //       err[`degree${index}`] = "Required";
 
-    profile.education.forEach((item, index) => {
-      if (!item.degree)
-        err[`degree${index}`] = "Required";
+  //     if (!item.grade)
+  //       err[`grade${index}`] = "Required";
 
-      if (!item.grade)
-        err[`grade${index}`] = "Required";
+  //     if (!/^\d{4}$/.test(item.year))
+  //       err[`year${index}`] = "Invalid Year";
+  //   });
 
-      if (!/^\d{4}$/.test(item.year))
-        err[`year${index}`] = "Invalid Year";
-    });
+  //   setErrors(err);
 
-    setErrors(err);
-
-    return Object.keys(err).length === 0;
-  };
-
+  //   return Object.keys(err).length === 0;
+  // };
   const updateProfile = () => {
-    if (!validate()) return;
+    // if (!validate()) return;
 
     const updatedCurrent = {
       ...currentUser,

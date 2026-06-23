@@ -1,7 +1,6 @@
 import React from "react";
 
-const ProgressBar = ({ profile }) => {
-  const calculateProgress = () => {
+ export const calculateProgress = (profile) => {
     let progress = 0;
 
     if (profile.firstName) progress += 5;
@@ -20,7 +19,11 @@ const ProgressBar = ({ profile }) => {
     return progress;
   };
 
-  const progress = calculateProgress();
+
+const ProgressBar = ({ profile }) => {
+ 
+
+  const progress = calculateProgress(profile);
 
   return (
     <div className="mb-4">

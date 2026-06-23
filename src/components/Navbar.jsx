@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/slices/cartSlice";
+import { calculateProgress } from "./ProgressBar";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const Navbar = () => {
   const user = useSelector((state) => state.cart.user);
   const cartItems=useSelector((state) => state.cart.cartItems);
   const currentUser=user || JSON.parse(localStorage.getItem("currentUser"));
+
+  const profileProgress = calculateProgress(currentUser?.profile || {});
 
   const logout = () => {
     localStorage.removeItem("currentUser");
@@ -52,8 +55,9 @@ const Navbar = () => {
         </Link>
         
          )}
-         <Link to="/kanban" className="btn btn-info ms-3">Kanban</Link>
-         
+         <Link to={profileProgress >50 ? "/kanban" : "/profile"} className="btn btn-info ms-3">
+           Kanban
+         </Link>
         <Link to="/cart" className="btn btn-primary ms-3">Cart{cartItems.length > 0 && ` (${cartItems.length})`}</Link>
         <Link to="/chat"className="btn btn-info ms-3">Chat</Link>
         {
