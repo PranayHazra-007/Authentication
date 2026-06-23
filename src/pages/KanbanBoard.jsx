@@ -1,29 +1,219 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-
 import {useDispatch,useSelector} from "react-redux";
-
-import {addTask,moveTask,deleteTask} from "../redux/slices/kanbanSlice";
+import {addTask,updateTask,moveTaskForward,moveTaskBackward,updateRating,deleteTask} from "../redux/slices/kanbanSlice";
 
 const KanbanBoard = () => {
-  const [taskTitle, setTaskTitle] = useState("");
-
   const dispatch = useDispatch();
-
   const tasks = useSelector((state) => state.kanban.tasks);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] =useState({
+      caption: "",
+      shortDescription: "",
+      startDate: "",
+      endDate: "",
+      milestones: [
+        {
+          name: "",
+          days: "",
+        },
+      ],
+    });
 
-  const handleAddTask = () => {
-    if (!taskTitle.trim()) return;
+  const handleChange = (e) => setFormData({...formData,[e.target.name]: e.target.value});
+  
+  const handleMilestoneChange = (index,field,value) => {
+    const updated =[...formData.milestones];
+    updated[index][field] = value;
+    setFormData({...formData,milestones: updated});
+  };
 
-    dispatch(
-      addTask({
-        id: Date.now(),
-        title: taskTitle,
-        status: "todo",
-      })
-    );
+  const addMilestone = () => {
+    setFormData({...formData,milestones: [...formData.milestones,{name: "",days: ""}]});
+  };
 
-    setTaskTitle("");
+  const resetForm = () => {
+    setFormData({
+      caption: "",
+      shortDescription: "",
+      startDate: "",
+      endDate: "",
+      milestones: [
+        {
+          name: "",
+          days: "",
+        },
+      ],
+    });
+
+    setEditingId(null);
+  };
+
+  const handleSubmit = () => {
+    if (!formData.caption.trim()) return;
+    if (editingId) {
+      dispatch(updateTask({id: editingId,...formData}));
+    } else {
+      dispatch(addTask(formData));
+    }
+    resetForm();
+  };
+
+  const handleEdit = (task) => {
+    setEditingId(task.id);
+    setFormData({
+      caption: task.caption,
+      shortDescription: task.shortDescription,
+      startDate: task.startDate,
+      endDate: task.endDate,
+      milestones:task.milestones.map((m) => ({
+      name: m.name,
+      days: m.days,
+    })),
+    });
+  };
+
+  const renderTasks = (status) => {
+    return tasks
+      .filter(
+        (task) => task.status === status
+      )
+      .map((task) => (
+        <div
+          key={task.id}
+          className="card p-3 mb-3 shadow-sm"
+        >
+          <h6>
+            Task #{task.taskNumber}
+          </h6>
+
+          <h5>{task.caption}</h5>
+
+          <p>
+            {task.shortDescription}
+          </p>
+
+          <p>
+            <strong>
+              Start:
+            </strong>{" "}
+            {task.startDate}
+          </p>
+
+          <p>
+            <strong>
+              End:
+            </strong>{" "}
+            {task.endDate}
+          </p>
+
+          <div>
+            <strong>
+              Milestones:
+            </strong>
+
+            <ul>
+              {task.milestones.map(
+                (m, index) => (
+                  <li key={index}>
+                    {m.name} (
+                    {m.days} Days)
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+
+          {task.status === "done" && (
+            <div className="mb-2">
+              <label>
+                Rating
+              </label>
+
+              <input
+                type="number"
+                min="1"
+                max="10"
+                className="form-control"
+                value={
+                  task.rating || ""
+                }
+                onChange={(e) =>
+                  dispatch(
+                    updateRating({
+                      id: task.id,
+                      rating:
+                        Number(
+                          e.target.value
+                        ),
+                    })
+                  )
+                }
+              />
+            </div>
+          )}
+
+          <div className="d-flex flex-wrap gap-2">
+
+            {task.status !== "todo" && (
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  dispatch(
+                    moveTaskBackward(
+                      task.id
+                    )
+                  )
+                }
+              >
+                Back
+              </button>
+            )}
+
+            {task.status !== "done" && (
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() =>
+                  dispatch(
+                    moveTaskForward(
+                      task.id
+                    )
+                  )
+                }
+              >
+                Next
+              </button>
+            )}
+
+            {task.status === "todo" && (
+              <>
+                <button
+                  className="btn btn-warning btn-sm"
+                  onClick={() =>
+                    handleEdit(task)
+                  }
+                >
+                  Edit
+                </button>
+
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() =>
+                    dispatch(
+                      deleteTask(
+                        task.id
+                      )
+                    )
+                  }
+                >
+                  Delete
+                </button>
+              </>
+            )}
+
+          </div>
+        </div>
+      ));
   };
 
   return (
@@ -31,174 +221,168 @@ const KanbanBoard = () => {
       <Navbar />
 
       <div className="container mt-4">
+        <h2 className="mb-4">Kanban Board</h2>
+        <div className="card p-4 mb-4">
 
-        <h2 className="mb-4">
-          Kanban Board
-        </h2>
-
-        <div className="d-flex mb-4">
+          <h4>{editingId ? "Edit Task" : "Create Task"}</h4>
 
           <input
             type="text"
-            className="form-control"
-            placeholder="Enter Task"
-            value={taskTitle}
-            onChange={(e) =>
-              setTaskTitle(e.target.value)
-            }
+            className="form-control mb-3"
+            placeholder="Caption"
+            name="caption"
+            value={formData.caption}
+            onChange={handleChange}
           />
 
+          <textarea
+            className="form-control mb-3"
+            rows="3"
+            placeholder="Short Description"
+            name="shortDescription"
+            value={
+              formData.shortDescription
+            }
+            onChange={handleChange}
+          />
+
+          <div className="row">
+
+            <div className="col-md-6">
+              <label>
+                Start Date
+              </label>
+
+              <input
+                type="date"
+                className="form-control"
+                name="startDate"
+                value={
+                  formData.startDate
+                }
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label>
+                End Date
+              </label>
+
+              <input
+                type="date"
+                className="form-control"
+                name="endDate"
+                value={
+                  formData.endDate
+                }
+                onChange={handleChange}
+              />
+            </div>
+
+          </div>
+
+          <hr />
+
+          <h5>Milestones</h5>
+
+          {formData.milestones.map(
+            (milestone, index) => (
+              <div
+                className="row mb-2"
+                key={index}
+              >
+                <div className="col-md-8">
+
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Milestone Name"
+                    value={
+                      milestone.name
+                    }
+                    onChange={(e) =>
+                      handleMilestoneChange(
+                        index,
+                        "name",
+                        e.target.value
+                      )
+                    }
+                  />
+
+                </div>
+
+                <div className="col-md-4">
+
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Days"
+                    value={
+                      milestone.days
+                    }
+                    onChange={(e) =>
+                      handleMilestoneChange(
+                        index,
+                        "days",
+                        e.target.value
+                      )
+                    }
+                  />
+
+                </div>
+              </div>
+            )
+          )}
+
           <button
-            className="btn btn-primary ms-2"
-            onClick={handleAddTask}
+            className="btn btn-info mb-3"
+            onClick={addMilestone}
           >
-            Add Task
+            Add More Milestone
+          </button>
+
+          <br />
+
+          <button
+            className="btn btn-primary"
+            onClick={handleSubmit}
+          >
+            {editingId
+              ? "Update Task"
+              : "Add Task"}
           </button>
 
         </div>
 
         <div className="row">
 
-          {/* TODO */}
-
           <div className="col-md-4">
-            <div className="card p-3">
+            <h3 className="text-center">
+              TO DO
+            </h3>
 
-              <h4>To Do</h4>
-
-              {tasks
-                .filter(
-                  (task) =>
-                    task.status === "todo"
-                )
-                .map((task) => (
-                  <div
-                    key={task.id}
-                    className="card p-2 mb-2"
-                  >
-                    <p>{task.title}</p>
-
-                    <button
-                      className="btn btn-success btn-sm mb-2"
-                      onClick={() =>
-                        dispatch(
-                          moveTask({
-                            id: task.id,
-                            status:
-                              "inprogress",
-                          })
-                        )
-                      }
-                    >
-                      Move →
-                    </button>
-
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() =>
-                        dispatch(
-                          deleteTask(
-                            task.id
-                          )
-                        )
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))}
-            </div>
+            {renderTasks("todo")}
           </div>
 
-          {/* IN PROGRESS */}
-
           <div className="col-md-4">
-            <div className="card p-3">
+            <h3 className="text-center">
+              PROGRESS
+            </h3>
 
-              <h4>In Progress</h4>
-
-              {tasks
-                .filter(
-                  (task) =>
-                    task.status ===
-                    "inprogress"
-                )
-                .map((task) => (
-                  <div
-                    key={task.id}
-                    className="card p-2 mb-2"
-                  >
-                    <p>{task.title}</p>
-
-                    <button
-                      className="btn btn-success btn-sm mb-2"
-                      onClick={() =>
-                        dispatch(
-                          moveTask({
-                            id: task.id,
-                            status:
-                              "done",
-                          })
-                        )
-                      }
-                    >
-                      Move →
-                    </button>
-
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() =>
-                        dispatch(
-                          deleteTask(
-                            task.id
-                          )
-                        )
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))}
-            </div>
+            {renderTasks("progress")}
           </div>
 
-          {/* DONE */}
-
           <div className="col-md-4">
-            <div className="card p-3">
+            <h3 className="text-center">
+              DONE
+            </h3>
 
-              <h4>Done</h4>
-
-              {tasks
-                .filter(
-                  (task) =>
-                    task.status === "done"
-                )
-                .map((task) => (
-                  <div
-                    key={task.id}
-                    className="card p-2 mb-2"
-                  >
-                    <p>{task.title}</p>
-
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() =>
-                        dispatch(
-                          deleteTask(
-                            task.id
-                          )
-                        )
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))}
-            </div>
+            {renderTasks("done")}
           </div>
 
         </div>
+
       </div>
     </>
   );
