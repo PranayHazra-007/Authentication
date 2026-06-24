@@ -7,6 +7,7 @@ import {addTask,updateTask,moveTaskForward,moveTaskBackward,updateRating,deleteT
 const KanbanBoard = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.kanban.tasks);
+  const currentUser=JSON.parse(localStorage.getItem("currentUser"));
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] =useState({
       caption: "",
@@ -28,49 +29,67 @@ const KanbanBoard = () => {
     updated[index][field] = value;
     setFormData({...formData,milestones: updated});
   };
-
   const addMilestone = () => {
     setFormData({...formData,milestones: [...formData.milestones,{name: "",days: ""}]});
   };
 
   const resetForm = () => {
-    setFormData({
-      caption: "",
-      shortDescription: "",
-      startDate: "",
-      endDate: "",
-      milestones: [
-        {
-          name: "",
-          days: "",
-        },
-      ],
-    });
+  setFormData({
+    caption: "",
+    shortDescription: "",
+    startDate: "",
+    endDate: "",
+    milestones: [
+      {
+        name: "",
+        days: "",
+      },
+    ],
+  });
 
-    setEditingId(null);
-  };
+  setEditingId(null);
+};
 
   const handleSubmit = () => {
-    if (!formData.caption.trim()) {
-      toast.error("Caption is required");
-      return;
-    }
-      if (formData.milestones.length === 0 || formData.milestones.some((m) => !m.name.trim() || !m.days)) {
-      toast.error("Milestones are required");
-       return;
-    }
-    if(!formData.startDate) {
-      toast.error("Start date is required");
-      return;
-    }
+  if (!formData.caption.trim()) {
+    toast.error("Caption is required");
+    return;
+  }
+  if (
+    formData.milestones.length === 0 ||
+    formData.milestones.some(
+      (m) => !m.name.trim() || !m.days
+    )
+  ) {
+    toast.error("Milestones are required");
+    return;
+  }
 
-    if (editingId) {
-      dispatch(updateTask({id: editingId,...formData}));
-    } else {
-      dispatch(addTask(formData));
-    }
-    resetForm();
-  };
+  if (!formData.startDate) {
+    toast.error("Start date is required");
+    return;
+  }
+
+  if (editingId) {
+    dispatch(
+      updateTask({
+        id: editingId,
+        ...formData,
+      })
+    );
+  } else {
+    dispatch(
+      addTask({
+        ...formData,
+        username:
+          currentUser?.username ||
+          currentUser?.email,
+      })
+    );
+  }
+
+  resetForm();
+};
 
   const handleEdit = (task) => {
     setEditingId(task.id);
@@ -99,18 +118,14 @@ const KanbanBoard = () => {
       .map((task) => (
         <div
           key={task.id}
-          className="card p-3 mb-3 shadow-sm"
+          className="task-card"
         >
-          <h6>
-            Task #{task.taskNumber}
-          </h6>
-
+          <div className="task-number">Task #{task.taskNumber}</div>
+          <p className="text-primary fw-bold"> User: {task.username}</p>
           <h5>{task.caption}</h5>
-
           <p>
             {task.shortDescription}
           </p>
-
           <p>
             <strong>
               Start:
@@ -238,12 +253,56 @@ const KanbanBoard = () => {
     <>
       <Navbar />
 
-      <div className="container mt-4">
+          <div className="kanban-header">
+             <h2>Project Kanban Board</h2>
+               <p className="mb-0">Track tasks, milestones and progress</p>
+         </div>
+
+              {/* Kanban Columns */}
+
+         <div className="row mb-4">
+
+  <div className="col-md-4">
+    <div className="card stats-card p-3 text-center">
+      <h3>{tasks.length}</h3>
+      <p>Total Tasks</p>
+    </div>
+  </div>
+
+  <div className="col-md-4">
+    <div className="card stats-card p-3 text-center">
+      <h3>
+        {
+          tasks.filter(
+            t => t.status === "progress"
+          ).length
+        }
+      </h3>
+      <p>In Progress</p>
+    </div>
+  </div>
+
+  <div className="col-md-4">
+    <div className="card stats-card p-3 text-center">
+      <h3>
+        {
+          tasks.filter(
+            t => t.status === "done"
+          ).length
+        }
+      </h3>
+      <p>Completed</p>
+    </div>
+  </div>
+
+</div>
+            
+            {/* Kanban Board */}
+      <div className="container mt-4 kanban-page">
         <h2 className="mb-4">Kanban Board</h2>
-        <div className="card p-4 mb-4">
+        <div className="card p-4 mb-4 kanban-form">
 
           <h4>{editingId ? "Edit Task" : "Create Task"}</h4>
-
           <input
             type="text"
             className="form-control mb-3"
@@ -282,21 +341,6 @@ const KanbanBoard = () => {
               />
             </div>
 
-            {/* <div className="col-md-6">
-              <label>
-                End Date
-              </label>
-
-              <input
-                type="date"
-                className="form-control"
-                name="endDate"
-                value={
-                  formData.endDate
-                }
-                onChange={handleChange}
-              />
-            </div> */}
 
           </div>
 
@@ -387,26 +431,25 @@ const KanbanBoard = () => {
 
         <div className="row">
 
-          <div className="col-md-4">
-            <h3 className="text-center">
-              TO DO
-            </h3>
+          <div className="col-md-4 kanban-column">
+            <div className="todo-header">
+               <h5 className="mb-0">TO DO</h5>
+            </div>
 
             {renderTasks("todo")}
           </div>
 
-          <div className="col-md-4">
-            <h3 className="text-center">
-              PROGRESS
-            </h3>
+          <div className="col-md-4 kanban-column">
+            <div className="progress-header">
+            <h5 className="mb-0">PROGRESS</h5></div>
 
             {renderTasks("progress")}
           </div>
 
-          <div className="col-md-4">
-            <h3 className="text-center">
-              DONE
-            </h3>
+          <div className="col-md-4 kanban-column">
+            <div className="done-header">
+               <h5 className="mb-0">DONE</h5>
+           </div>
 
             {renderTasks("done")}
           </div>

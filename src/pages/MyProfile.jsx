@@ -203,257 +203,338 @@ const MyProfile = () => {
   };
 
   return (
-   <>
-   <Navbar/>
-    <div className="container mt-5 mb-5">
+  <>
+    <Navbar />
 
+    <div
+      className="container py-5"
+      style={{ minHeight: "100vh" }}
+    >
       <div
-        className="card shadow p-4 mx-auto"
-        style={{ maxWidth: "700px" }}
+        className="card border-0 shadow-lg mx-auto overflow-hidden"
+        style={{
+          maxWidth: "950px",
+          borderRadius: "24px",
+        }}
       >
-        <h2 className="text-center mb-4">
-          Manage Profile
-        </h2>
+        {/* Header */}
+        <div
+          className="text-center text-white py-5"
+          style={{
+            background:
+              "linear-gradient(135deg,#2563eb,#7c3aed)",
+          }}
+        >
+          <h2 className="fw-bold mb-2">
+            My Profile
+          </h2>
 
-        <ProgressBar profile={profile} />
-
-        <div className="mb-3">
-          <input
-            className="form-control"
-            placeholder="First Name"
-            name="firstName"
-            value={profile.firstName}
-            onChange={handleChange}
-          />
-          <small className="text-danger">
-            {errors.firstName}
-          </small>
+          <p className="mb-0 opacity-75">
+            Manage your personal information
+          </p>
         </div>
 
-        <div className="mb-3">
-          <input
-            className="form-control"
-            placeholder="Last Name"
-            name="lastName"
-            value={profile.lastName}
-            onChange={handleChange}
-          />
-          <small className="text-danger">
-            {errors.lastName}
-          </small>
-        </div>
+        <div className="p-4 p-md-5">
 
-        <div className="mb-3">
-          <select
-            className="form-select"
-            name="gender"
-            value={profile.gender}
-            onChange={handleChange}
-          >
-            <option value="">
-              Select Gender
-            </option>
+          <div className="mb-4">
+            <ProgressBar profile={profile} />
+          </div>
 
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-semibold">
+                First Name
+              </label>
 
-          </select>
+              <input
+                className="form-control"
+                placeholder="First Name"
+                name="firstName"
+                value={profile.firstName}
+                onChange={handleChange}
+              />
 
-          <small className="text-danger">
-            {errors.gender}
-          </small>
+              <small className="text-danger">
+                {errors.firstName}
+              </small>
+            </div>
 
-        </div>
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-semibold">
+                Last Name
+              </label>
 
-        <div className="mb-3">
+              <input
+                className="form-control"
+                placeholder="Last Name"
+                name="lastName"
+                value={profile.lastName}
+                onChange={handleChange}
+              />
 
-          <input
-            className="form-control"
-            placeholder="+91 9876543210"
-            name="mobile"
-            value={profile.mobile}
-            onChange={handleChange}
-          />
+              <small className="text-danger">
+                {errors.lastName}
+              </small>
+            </div>
+          </div>
 
-          <small className="text-danger">
-            {errors.mobile}
-          </small>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">
+              Gender
+            </label>
 
-        </div>
+            <select
+              className="form-select"
+              name="gender"
+              value={profile.gender}
+              onChange={handleChange}
+            >
+              <option value="">
+                Select Gender
+              </option>
 
-        <div className="mb-3">
-
-          <input
-            className="form-control"
-            placeholder="1234-5678-9012"
-            name="aadhaar"
-            value={profile.aadhaar}
-            onChange={handleChange}
-          />
-
-          <small className="text-danger">
-            {errors.aadhaar}
-          </small>
-
-        </div>
-
-        <div className="mb-3">
-
-          <input
-            type="date"
-            className="form-control"
-            name="dob"
-            value={profile.dob}
-            onChange={handleChange}
-          />
-
-          <small className="text-danger">
-            {errors.dob}
-          </small>
-
-        </div>
-
-        <h4 className="mt-4">
-          Education Details
-        </h4>
-
-        {profile.education.map((item, index) => (
-
-          <div
-            key={index}
-            className="border p-3 rounded mb-3"
-          >
-
-            <input
-              className="form-control mb-2"
-              placeholder="Degree"
-              name="degree"
-              value={item.degree}
-              onChange={(e) =>
-                handleEducation(index, e)
-              }
-            />
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
 
             <small className="text-danger">
-              {errors[`degree${index}`]}
+              {errors.gender}
             </small>
+          </div>
 
-            <input
-              className="form-control mb-2"
-              placeholder="Grade"
-              name="grade"
-              value={item.grade}
-              onChange={(e) =>
-                handleEducation(index, e)
-              }
-            />
+          <div className="row">
 
-            <small className="text-danger">
-              {errors[`grade${index}`]}
-            </small>
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-semibold">
+                Mobile Number
+              </label>
 
-            <input
-              className="form-control mb-2"
-              placeholder="Year"
-              name="year"
-              value={item.year}
-              onChange={(e) =>
-                handleEducation(index, e)
-              }
-              
-            />
-            <h6 className="mt-3">Subjects</h6>
-{(item.subjects || [""]).map((subject, subIndex) => (
-  <div
-    key={subIndex}
-    className="d-flex gap-2 mb-2"
-  >
-    <input
-      type="text"
-      className="form-control"
-      placeholder="Subject Name"
-      value={subject}
-      onChange={(e) =>
-        handleSubjectChange(
-          index,
-          subIndex,
-          e.target.value
-        )
-      }
-    />
+              <input
+                className="form-control"
+                placeholder="+91 9876543210"
+                name="mobile"
+                value={profile.mobile}
+                onChange={handleChange}
+              />
 
-    {(item.subjects || [""]).length > 0 && (
-      <button
-        className="btn btn-danger"
-        type="button"
-        onClick={() =>
-          removeSubject(index, subIndex)
-        }
-      >
-        ×
-      </button>
-    )}
-  </div>
-))}
+              <small className="text-danger">
+                {errors.mobile}
+              </small>
+            </div>
 
-<button
-  type="button"
-  className="btn btn-success btn-sm mt-2"
-  onClick={() => addSubject(index)}
->
-  + Add Subject
-</button>
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-semibold">
+                Aadhaar Number
+              </label>
 
-            <small className="text-danger">
-              {errors[`year${index}`]}
-            </small>
+              <input
+                className="form-control"
+                placeholder="1234-5678-9012"
+                name="aadhaar"
+                value={profile.aadhaar}
+                onChange={handleChange}
+              />
 
-
-            {profile.education.length > 1 && (
-              <button
-                className="btn btn-danger btn-sm mt-2"
-                onClick={() =>
-                  removeEducation(index)
-                }
-              >
-                Remove
-              </button>
-            )}
+              <small className="text-danger">
+                {errors.aadhaar}
+              </small>
+            </div>
 
           </div>
 
-        ))}
+          <div className="mb-4">
+            <label className="form-label fw-semibold">
+              Date Of Birth
+            </label>
 
-        <button
-          className="btn btn-secondary mb-3"
-          onClick={addEducation}
-        >
-          + Add Education
-        </button>
+            <input
+              type="date"
+              className="form-control"
+              name="dob"
+              value={profile.dob}
+              onChange={handleChange}
+            />
 
-        {
-          (!currentUser?.profile) ?(
-            <button
-          className="btn btn-primary"
-          onClick={updateProfile}
-        >
-          Create Profile
-        </button>
-          ):(<button
-          className="btn btn-primary"
-          onClick={updateProfile}
-        >
-          Update Profile
-        </button>)
-        }
+            <small className="text-danger">
+              {errors.dob}
+            </small>
+          </div>
 
+          <hr className="my-5" />
+
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h4 className="fw-bold mb-0">
+              🎓 Education Details
+            </h4>
+
+            <span className="badge bg-primary">
+              {profile.education.length}/3
+            </span>
+          </div>
+
+          {profile.education.map(
+            (item, index) => (
+              <div
+                key={index}
+                className="bg-light border-0 shadow-sm p-4 mb-4"
+                style={{
+                  borderRadius: "18px",
+                }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h5 className="fw-bold mb-0">
+                    Education #{index + 1}
+                  </h5>
+
+                  {profile.education.length >
+                    1 && (
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() =>
+                        removeEducation(
+                          index
+                        )
+                      }
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                <input
+                  className="form-control mb-3"
+                  placeholder="Degree"
+                  name="degree"
+                  value={item.degree}
+                  onChange={(e) =>
+                    handleEducation(
+                      index,
+                      e
+                    )
+                  }
+                />
+
+                <input
+                  className="form-control mb-3"
+                  placeholder="Grade"
+                  name="grade"
+                  value={item.grade}
+                  onChange={(e) =>
+                    handleEducation(
+                      index,
+                      e
+                    )
+                  }
+                />
+
+                <input
+                  className="form-control mb-3"
+                  placeholder="Year"
+                  name="year"
+                  value={item.year}
+                  onChange={(e) =>
+                    handleEducation(
+                      index,
+                      e
+                    )
+                  }
+                />
+
+                <h6 className="fw-bold mt-4 mb-3">
+                  📚 Subjects
+                </h6>
+
+                {(item.subjects || [""]).map(
+                  (
+                    subject,
+                    subIndex
+                  ) => (
+                    <div
+                      key={subIndex}
+                      className="d-flex gap-2 mb-2"
+                    >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Subject Name"
+                        value={subject}
+                        onChange={(e) =>
+                          handleSubjectChange(
+                            index,
+                            subIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+
+                      {(item.subjects ||
+                        [""])
+                        .length > 0 && (
+                        <button
+                          className="btn btn-danger"
+                          type="button"
+                          onClick={() =>
+                            removeSubject(
+                              index,
+                              subIndex
+                            )
+                          }
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  )
+                )}
+
+                <button
+                  type="button"
+                  className="btn btn-outline-success btn-sm mt-3"
+                  onClick={() =>
+                    addSubject(index)
+                  }
+                >
+                  + Add Subject
+                </button>
+              </div>
+            )
+          )}
+
+          <button
+            className="btn btn-outline-primary w-100 py-2 mb-4"
+            onClick={addEducation}
+          >
+            + Add Education
+          </button>
+
+          <button
+            className="btn btn-primary w-100 py-3 fw-bold"
+            style={{
+              borderRadius: "14px",
+            }}
+            onClick={updateProfile}
+          >
+            {currentUser?.profile
+              ? "Update Profile"
+              : "Create Profile"}
+          </button>
+
+        </div>
       </div>
 
-     <button onClick={() => navigate(-1)}>Back</button>
+      <div className="text-center mt-4">
+        <button
+          className="btn btn-outline-dark px-4"
+          onClick={() => navigate(-1)}
+        >
+          ← Back
+        </button>
+      </div>
+
     </div>
-   </>
-  );
+  </>
+);
 };
 export default MyProfile;
 

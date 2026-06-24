@@ -7,151 +7,306 @@ import ProductCard from "../components/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../redux/slices/productSlice";
 import {
-  getProducts,
-  getProductsByCategory,
-  searchProducts,
+getProducts,
+getProductsByCategory,
+searchProducts,
 } from "../services/api";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state) => state.product?.products || []);
-  const user = JSON.parse(localStorage.getItem("currentUser"));
+const dispatch = useDispatch();
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
+const products = useSelector(
+(state) => state.product?.products || []
+);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+const user = JSON.parse(
+localStorage.getItem("currentUser")
+);
 
-  const fetchProducts = () => {
-    getProducts()
-      .then((res) => {
-        dispatch(setProducts(res.data.products));
-        setCurrentPage(1);
-      })
-      .catch((err) => console.log(err));
-  };
+const [currentPage, setCurrentPage] =
+useState(1);
 
-  const handleCategoryChange = (category) => {
-    if (category === "") {
-      fetchProducts();
-    } else {
-      getProductsByCategory(category)
-        .then((res) => {
-          dispatch(setProducts(res.data.products));
-          setCurrentPage(1);
-        })
-        .catch((err) => console.log(err));
-    }
-  };
+const productsPerPage = 8;
 
-  const handleSearch = (searchText) => {
-    if (searchText.trim() === "") {
-      fetchProducts();
-    } else {
-      searchProducts(searchText)
-        .then((res) => {
-          dispatch(setProducts(res.data.products));
-          setCurrentPage(1);
-        })
-        .catch((err) => console.log(err));
-    }
-  };
+useEffect(() => {
+fetchProducts();
+}, []);
 
-  // Pagination Logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct =
-    indexOfLastProduct - productsPerPage;
+const fetchProducts = () => {
+getProducts()
+.then((res) => {
+dispatch(
+setProducts(
+res.data.products
+)
+);
 
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
+    setCurrentPage(1);
+  })
+  .catch((err) =>
+    console.log(err)
   );
 
-  const totalPages = Math.ceil(
-    products.length / productsPerPage
-  );
 
-  return (
-    <>
-      {user?.email && (
-        <Navbar />
-      )}
+};
 
-      <div className="container mt-4">
-        <Search onSearch={handleSearch} />
+const handleCategoryChange = (
+category
+) => {
+if (category === "") {
+fetchProducts();
+} else {
+getProductsByCategory(
+category
+)
+.then((res) => {
+dispatch(
+setProducts(
+res.data.products
+)
+);
 
-        <CategoryFilter
-          onCategoryChange={handleCategoryChange}
-        />
 
-        <div className="row mt-4">
-          {currentProducts.map((item) => (
-            <ProductCard
-              key={item.id}
-              product={item}
-            />
-          ))}
+      setCurrentPage(1);
+    })
+    .catch((err) =>
+      console.log(err)
+    );
+}
+
+
+};
+
+const handleSearch = (
+searchText
+) => {
+if (
+searchText.trim() === ""
+) {
+fetchProducts();
+} else {
+searchProducts(
+searchText
+)
+.then((res) => {
+dispatch(
+setProducts(
+res.data.products
+)
+);
+
+
+      setCurrentPage(1);
+    })
+    .catch((err) =>
+      console.log(err)
+    );
+}
+
+
+};
+
+const indexOfLastProduct =
+currentPage *
+productsPerPage;
+
+const indexOfFirstProduct =
+indexOfLastProduct -
+productsPerPage;
+
+const currentProducts =
+products.slice(
+indexOfFirstProduct,
+indexOfLastProduct
+);
+
+const totalPages =
+Math.ceil(
+products.length /
+productsPerPage
+);
+
+return (
+<>
+{user?.email && <Navbar />}
+
+
+  <div className="container py-4">
+
+    {user?.email && (
+      <div className="section-card mb-4">
+
+        <div className="row align-items-center">
+
+          <div className="col-md-8">
+
+            <h1 className="display-5 fw-bold">
+              Welcome Back,
+              {" "}
+              {user.username}
+            </h1>
+
+            <p className="text-muted fs-5">
+              Browse products,
+              manage tasks,
+              chat with users
+              and manage your
+              profile from one
+              place.
+            </p>
+
+          </div>
+
+          <div className="col-md-4">
+
+            <div className="card border-0 shadow-sm p-4 text-center">
+
+              <h2 className="fw-bold text-primary">
+                {
+                  products.length
+                }
+              </h2>
+
+              <p className="text-muted mb-0">
+                Total Products
+              </p>
+
+            </div>
+
+          </div>
+
         </div>
 
-        {/* Pagination */}
+      </div>
+    )}
 
-        <div className="d-flex justify-content-center mt-4 mb-5">
+    {user?.email &&
+      <>
+        <div className="section-card mb-4">
+
+          <Search
+            onSearch={
+              handleSearch
+            }
+          />
+
+          <div className="mt-3">
+            <CategoryFilter
+              onCategoryChange={
+                handleCategoryChange
+              }
+            />
+          </div>
+
+        </div>
+
+        <div className="d-flex justify-content-between align-items-center mb-3">
+
+          <h3 className="fw-bold">
+            Products
+          </h3>
+
+          <span className="badge bg-primary fs-6">
+            {
+              products.length
+            }{" "}
+            Items
+          </span>
+
+        </div>
+
+        <div className="row">
+
+          {currentProducts.map(
+            (item) => (
+              <ProductCard
+                key={
+                  item.id
+                }
+                product={
+                  item
+                }
+              />
+            )
+          )}
+
+        </div>
+
+        <div className="d-flex justify-content-center align-items-center gap-2 mt-5 mb-5">
 
           <button
-            className="btn btn-outline-primary me-2"
-            disabled={currentPage === 1}
+            className="btn btn-outline-primary"
+            disabled={
+              currentPage ===
+              1
+            }
             onClick={() =>
-              setCurrentPage(currentPage - 1)
+              setCurrentPage(
+                currentPage -
+                  1
+              )
             }
           >
             Previous
           </button>
 
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              className={`btn mx-1 ${
-                currentPage === index + 1
-                  ? "btn-primary"
-                  : "btn-outline-primary"
-              }`}
-              onClick={() =>
-                setCurrentPage(index + 1)
-              }
-            >
-              {index + 1}
-            </button>
-          ))}
+          {[
+            ...Array(
+              totalPages
+            ),
+          ].map(
+            (
+              _,
+              index
+            ) => (
+              <button
+                key={
+                  index
+                }
+                className={`btn ${
+                  currentPage ===
+                  index +
+                    1
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+                }`}
+                onClick={() =>
+                  setCurrentPage(
+                    index +
+                      1
+                  )
+                }
+              >
+                {index + 1}
+              </button>
+            )
+          )}
 
           <button
-            className="btn btn-outline-primary ms-2"
-            disabled={currentPage === totalPages}
+            className="btn btn-outline-primary"
+            disabled={
+              currentPage ===
+              totalPages
+            }
             onClick={() =>
-              setCurrentPage(currentPage + 1)
+              setCurrentPage(
+                currentPage +
+                  1
+              )
             }
           >
             Next
           </button>
 
         </div>
-        {
-          !user?.email && (
-            <div className="text-center">
-              <span>
-              <p>Please log in to view products.</p> </span>
-              <button className="btn btn-primary" onClick={() => (window.location.href = "/login")}>
-                Log In
-              </button>
-             
-            </div>
-          )
-        }
-      </div>
-    </>
-  );
+      </>
+     }
+
+  </div>
+</>
+
+
+);
 };
 
 export default HomePage;

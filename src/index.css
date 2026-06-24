@@ -1,111 +1,269 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+--primary: #2563eb;
+--primary-hover: #1d4ed8;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+--success: #16a34a;
+--danger: #dc2626;
+--warning: #f59e0b;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+--bg: #f5f7fb;
+--card-bg: #ffffff;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
+--text-dark: #111827;
+--text-light: #6b7280;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+--border: #e5e7eb;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+--shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+--radius: 14px;
 }
 
 body {
-  margin: 0;
+font-family:
+Inter,
+"Segoe UI",
+sans-serif;
+
+background: var(--bg);
+color: var(--text-dark);
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+min-height: 100vh;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+a {
+text-decoration: none;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+.card {
+border: none !important;
+border-radius: var(--radius) !important;
+box-shadow: var(--shadow-sm) !important;
+transition: 0.3s ease;
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+
+.card:hover {
+transform: translateY(-3px);
+box-shadow: var(--shadow-md) !important;
 }
-p {
+
+.btn {
+border-radius: 10px !important;
+font-weight: 600 !important;
+}
+
+.form-control,
+.form-select {
+border-radius: 10px !important;
+}
+
+.page-title {
+font-size: 2rem;
+font-weight: 700;
+margin-bottom: 20px;
+}
+
+.section-card {
+background: white;
+padding: 20px;
+border-radius: 14px;
+box-shadow: var(--shadow-sm);
+}
+
+::-webkit-scrollbar {
+width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+background: #cbd5e1;
+border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #94a3b8;
+}
+.card img:hover {
+  transform: scale(1.08);
+}
+
+.badge {
+  font-weight: 600;
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.navbar .btn{
+  transition: all .25s ease;
+}
+
+.navbar .btn:hover{
+  transform: translateY(-2px);
+}
+
+.navbar-brand{
+  transition: .3s;
+}
+
+.navbar-brand:hover{
+  opacity:.9;
+}
+
+
+/* My Profile */
+.form-control,
+.form-select{
+  border-radius:12px;
+  min-height:48px;
+}
+
+.form-control:focus,
+.form-select:focus{
+  box-shadow:0 0 0 .25rem rgba(37,99,235,.15);
+}
+
+.card{
+  transition:.3s;
+}
+
+.btn{
+  transition:.25s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+/* ===========================
+   KANBAN BOARD
+=========================== */
+
+.kanban-page {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.kanban-header {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #7c3aed
+  );
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+}
+
+.kanban-header h2 {
   margin: 0;
+  font-weight: 700;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.stats-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  transition: .3s;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.stats-card:hover {
+  transform: translateY(-5px);
+}
+
+.kanban-form {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.kanban-column {
+  background: white;
+  border-radius: 18px;
+  padding: 15px;
+  min-height: 500px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+}
+
+.todo-header {
+  background: #2563eb;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.progress-header {
+  background: #f59e0b;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.done-header {
+  background: #10b981;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.task-card {
+  border: none;
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: .3s;
+}
+
+.task-card:hover {
+  transform: translateY(-3px);
+}
+
+.task-number {
+  background: #111827;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 30px;
+  display: inline-block;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.milestone-box {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.rating-box {
+  border: 2px solid #10b981;
+  border-radius: 10px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+}
+
+.btn {
+  border-radius: 12px;
 }

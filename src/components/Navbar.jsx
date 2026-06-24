@@ -1,86 +1,256 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import {
+useNavigate,
+Link,
+} from "react-router-dom";
 import toast from "react-hot-toast";
-import { useSelector, useDispatch } from "react-redux";
+import {
+useSelector,
+useDispatch,
+} from "react-redux";
 import { logoutUser } from "../redux/slices/cartSlice";
 import { calculateProgress } from "./ProgressBar";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+const navigate = useNavigate();
+const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.cart.user);
-  const cartItems=useSelector((state) => state.cart.cartItems);
-  const currentUser=user || JSON.parse(localStorage.getItem("currentUser"));
+const user = useSelector(
+(state) => state.cart.user
+);
 
-  const profileProgress = calculateProgress(currentUser?.profile || {});
+const cartItems = useSelector(
+(state) => state.cart.cartItems
+);
 
-  const logout = () => {
-    localStorage.removeItem("currentUser");
-    dispatch(logoutUser());
-    navigate("/");
-  };
-  const myProfile=() => {
-            if (!currentUser) {
-              toast.error("Please log in to access your profile.");
-              navigate(`/login`);
-            }else{
-              
-              navigate("/profile")}
-          }
+const currentUser =
+user ||
+JSON.parse(
+localStorage.getItem(
+"currentUser"
+)
+);
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark sticky-top bg-dark px-4">
+const profileProgress =
+calculateProgress(
+currentUser?.profile || {}
+);
 
-      <h4 className="navbar-brand mb-0">
+const logout = () => {
+localStorage.removeItem(
+"currentUser"
+);
+
+
+dispatch(logoutUser());
+
+navigate("/");
+
+
+};
+
+const myProfile = () => {
+if (!currentUser) {
+toast.error(
+"Please log in to access your profile."
+);
+
+
+  navigate("/login");
+} else {
+  navigate("/profile");
+}
+
+
+};
+
+return (
+<nav
+className="navbar navbar-expand-lg sticky-top"
+style={{
+background:
+"rgba(15,23,42,0.95)",
+backdropFilter:
+"blur(10px)",
+boxShadow:
+"0 10px 30px rgba(0,0,0,.15)",
+padding:
+"14px 0",
+}}
+> <div className="container">
+
+
+    <Link
+      to="/"
+      className="navbar-brand fw-bold d-flex align-items-center gap-2"
+      style={{
+        color: "white",
+        fontSize: "1.5rem",
+        textDecoration: "none",
+      }}
+    >
+      🚀
+      <span>
         Profile App
-      </h4>
+      </span>
+    </Link>
 
-      <div className="ms-auto d-flex align-items-center">
+    <div className="ms-auto d-flex align-items-center flex-wrap gap-2">
 
-        <span className="text-white me-3">
-          Welcome, {currentUser?.username || "Guest"}
-        </span>
-
-        <button
-          className="btn btn-primary me-2"
-          onClick={myProfile}
+      <div
+        className="d-flex align-items-center gap-2 me-2 px-3 py-2"
+        style={{
+          background:
+            "rgba(255,255,255,.08)",
+          borderRadius:
+            "50px",
+        }}
+      >
+        <div
+          style={{
+            width: "35px",
+            height: "35px",
+            borderRadius:
+              "50%",
+            background:
+              "#2563eb",
+            color: "white",
+            display: "flex",
+            alignItems:
+              "center",
+            justifyContent:
+              "center",
+            fontWeight:
+              "bold",
+          }}
         >
-          My Profile
-        </button>
-        {currentUser && (
-       <Link to="/manage-product" className="btn btn-success ms-3">
-           Manage Product
+          {currentUser?.username
+            ?.charAt(0)
+            ?.toUpperCase() ||
+            "G"}
+        </div>
+
+        <span
+          className="fw-semibold"
+          style={{
+            color: "white",
+          }}
+        >
+          {currentUser?.username ||
+            "Guest"}
+        </span>
+      </div>
+
+      <button
+        className="btn btn-outline-light"
+        style={{
+          borderRadius:
+            "12px",
+        }}
+        onClick={myProfile}
+      >
+        Profile
+      </button>
+
+      {currentUser && (
+        <Link
+          to="/manage-product"
+          className="btn btn-success"
+          style={{
+            borderRadius:
+              "12px",
+          }}
+        >
+          Products
         </Link>
-        
-         )}
-         <Link to={profileProgress >50 ? "/kanban" : "/profile"} className="btn btn-info ms-3">
-           Kanban
-         </Link>
-        <Link to="/cart" className="btn btn-primary ms-3">Cart{cartItems.length > 0 && ` (${cartItems.length})`}</Link>
-        <Link to="/chat"className="btn btn-info ms-3">Chat</Link>
-        {
-          currentUser ?(<button
-          className="btn btn-danger ms-3"
+      )}
+
+      <Link
+        to={
+          profileProgress > 50
+            ? "/kanban"
+            : "/profile"
+        }
+        className="btn btn-warning fw-semibold"
+        style={{
+          borderRadius:
+            "12px",
+        }}
+      >
+        Kanban
+      </Link>
+      <Link
+  to="/calendar"
+  className="btn btn-outline-light"
+>
+  Calendar
+</Link>
+
+      <Link
+        to="/chat"
+        className="btn btn-info text-white fw-semibold"
+        style={{
+          borderRadius:
+            "12px",
+        }}
+      >
+        Chat
+      </Link>
+
+      <Link
+        to="/cart"
+        className="btn btn-primary position-relative fw-semibold"
+        style={{
+          borderRadius:
+            "12px",
+        }}
+      >
+        Cart
+
+        {cartItems.length >
+          0 && (
+          <span
+            className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          >
+            {
+              cartItems.length
+            }
+          </span>
+        )}
+      </Link>
+
+      {currentUser ? (
+        <button
+          className="btn btn-danger fw-semibold"
+          style={{
+            borderRadius:
+              "12px",
+          }}
           onClick={logout}
         >
           Logout
-        </button>):(
-          <button
-          className="btn btn-primary ms-3"
-          onClick={()=>navigate("/login")}
+        </button>
+      ) : (
+        <button
+          className="btn btn-primary fw-semibold"
+          style={{
+            borderRadius:
+              "12px",
+          }}
+          onClick={() =>
+            navigate("/login")
+          }
         >
           Login
         </button>
-        )
-        }
+      )}
 
-      </div>
+    </div>
+  </div>
+</nav>
 
-    </nav>
-  );
+
+);
 };
 
 export default Navbar;
-
