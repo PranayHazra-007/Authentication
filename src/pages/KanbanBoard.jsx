@@ -7,7 +7,7 @@ import {addTask,updateTask,moveTaskForward,moveTaskBackward,updateRating,deleteT
 const KanbanBoard = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.kanban.tasks);
-  const currentUser=JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser=JSON.parse(localStorage.getItem("currentUser")) || {};
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] =useState({
       caption: "",
@@ -66,9 +66,14 @@ const KanbanBoard = () => {
   }
 
   if (!formData.startDate) {
-    toast.error("Start date is required");
-    return;
-  }
+  toast.error("Start date is required");
+  return;
+}
+
+if (!currentUser?.username) {
+  toast.error("Please login first");
+  return;
+}
 
   if (editingId) {
     dispatch(
@@ -251,6 +256,7 @@ const KanbanBoard = () => {
 
   return (
     <>
+    {}
       <Navbar />
 
           <div className="kanban-header">

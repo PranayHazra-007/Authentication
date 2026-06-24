@@ -237,7 +237,9 @@ const MyProfile = () => {
         <div className="p-4 p-md-5">
 
           <div className="mb-4">
-            <ProgressBar profile={profile} />
+            {
+              currentUser && <ProgressBar profile={profile} />
+            }
           </div>
 
           <div className="row">

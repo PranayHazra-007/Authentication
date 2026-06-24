@@ -9,31 +9,33 @@ const Calendar = () => {
   const month = today.getMonth();
 
   const firstDay = new Date(year,month,1).getDay();
-
   const daysInMonth = new Date(year,month + 1,0).getDate();
 
-  const monthName = today.toLocaleString( "default", { month: "long" });
-
+  const monthName = today.toLocaleString("default", {month: "long"});
   const calendarDays = [];
 
   for (let i = 0; i < firstDay; i++) {
     calendarDays.push(null);
   }
-
   for (let i = 1; i <= daysInMonth; i++) {
     calendarDays.push(i);
   }
 
   const getTasksForDate = (day) => {
-    const dateString = `${year}-${String(
-      month + 1
-    ).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
+    const currentDate = new Date(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
 
-    return tasks.filter(
-      (task) => task.startDate === dateString
-    );
+    return tasks.filter((task) => {
+      if (!task.startDate || !task.endDate) {
+        return false;
+      }
+      const startDate = new Date(task.startDate);
+      const endDate = new Date(task.endDate);
+
+      return (
+        currentDate >= startDate &&
+        currentDate <= endDate
+      );
+    });
   };
 
   return (
@@ -55,7 +57,7 @@ const Calendar = () => {
             {/* Week Days */}
 
             <div
-              className="d-grid mb-2"
+              className="d-grid mb-3"
               style={{
                 gridTemplateColumns:
                   "repeat(7,1fr)",
@@ -73,14 +75,14 @@ const Calendar = () => {
               ].map((day) => (
                 <div
                   key={day}
-                  className="text-center fw-bold"
+                  className="text-center fw-bold fs-5"
                 >
                   {day}
                 </div>
               ))}
             </div>
 
-            {/* Calendar Grid */}
+            {/* Calendar */}
 
             <div
               className="d-grid"
@@ -94,14 +96,14 @@ const Calendar = () => {
                 (day, index) => (
                   <div
                     key={index}
-                    className="border rounded p-2 bg-light"
+                    className="border rounded bg-light p-2"
                     style={{
-                      minHeight: "170px",
+                      minHeight: "180px",
                     }}
                   >
                     {day && (
                       <>
-                        <div className="fw-bold mb-2 fs-5">
+                        <div className="fw-bold fs-5 mb-2">
                           {day}
                         </div>
 
@@ -113,31 +115,39 @@ const Calendar = () => {
                             className="card border-0 shadow-sm mb-2"
                           >
                             <div className="card-body p-2">
-                            <div className="small text-primary">
+
+                              <div className="small text-primary fw-semibold">
                                 👤 {task.username}
                               </div>
-                              <div className="mt-1">
-                                <span
-                                  className={`badge ${
-                                    task.status ===
-                                    "todo"
-                                      ? "bg-secondary"
-                                      : task.status ===
-                                        "progress"
-                                      ? "bg-warning text-dark"
-                                      : "bg-success"
-                                  }`}
-                                >
-                                  {task.status.toUpperCase()}
-                                </span>
-                                 <div className="fw-bold small">
-                                {task.caption}
+
+                              <div className="fw-bold small">
+                                📝 {task.caption}
                               </div>
 
+                              <div className="small text-muted">
+                                {task.startDate}
+                                {" → "}
+                                {task.endDate}
                               </div>
+
+                              <span
+                                className={`badge mt-1 ${
+                                  task.status ===
+                                  "todo"
+                                    ? "bg-secondary"
+                                    : task.status ===
+                                      "progress"
+                                    ? "bg-warning text-dark"
+                                    : "bg-success"
+                                }`}
+                              >
+                                {task.status.toUpperCase()}
+                              </span>
+
                             </div>
                           </div>
                         ))}
+
                       </>
                     )}
                   </div>
@@ -146,6 +156,7 @@ const Calendar = () => {
             </div>
 
           </div>
+
         </div>
 
       </div>

@@ -19,7 +19,7 @@ const products = useSelector(
 (state) => state.product?.products || []
 );
 
-const user = JSON.parse(
+const currentUser = JSON.parse(
 localStorage.getItem("currentUser")
 );
 
@@ -128,12 +128,12 @@ productsPerPage
 
 return (
 <>
-{user?.email && <Navbar />}
+<Navbar />
 
 
   <div className="container py-4">
 
-    {user?.email && (
+    {currentUser?.email && (
       <div className="section-card mb-4">
 
         <div className="row align-items-center">
@@ -143,7 +143,7 @@ return (
             <h1 className="display-5 fw-bold">
               Welcome Back,
               {" "}
-              {user.username}
+              {currentUser.username}
             </h1>
 
             <p className="text-muted fs-5">
@@ -180,8 +180,6 @@ return (
       </div>
     )}
 
-    {user?.email &&
-      <>
         <div className="section-card mb-4">
 
           <Search
@@ -299,8 +297,8 @@ return (
           </button>
 
         </div>
-      </>
-     }
+      
+     
 
   </div>
 </>
