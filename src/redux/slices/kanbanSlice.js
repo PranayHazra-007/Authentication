@@ -5,7 +5,7 @@ const calculateEndDate = (startDate,milestones) => {
 
   const totalDays = milestones.reduce((sum, item) => sum + Number(item.days || 0),0);
   const date = new Date(startDate);
-  date.setDate(date.getDate() + totalDays);
+  date.setDate(date.getDate() + totalDays-1);
   return date.toISOString().split("T")[0];
 };
 
@@ -33,6 +33,10 @@ const kanbanSlice = createSlice({
         endDate:calculateEndDate(action.payload.startDate,action.payload.milestones),
         rating: null,
         status: "todo",
+        statusHistory: {
+        todo: action.payload.startDate,
+        progress: null,
+        done: null},
       };
 
       state.tasks.push(newTask);
@@ -53,16 +57,26 @@ const kanbanSlice = createSlice({
       }
     },
 
-    moveTaskForward: (state,action) => {
+    moveTaskForward: (state, action) => {
       const task = state.tasks.find((item) => item.id === action.payload);
-      if (!task) return;
+        if (!task) return;
+          if (!task.statusHistory) {
+            task.statusHistory = {
+               todo: task.startDate,
+               progress: null,
+               done: null,
+              };
+              }
 
-      if (task.status === "todo") {
-        task.status ="progress";
-      } else if (task.status ==="progress") {
-        task.status = "done";
-      }
-      localStorage.setItem("tasks",JSON.stringify(state.tasks));
+        if (task.status === "todo") {
+           task.status = "progress";
+           task.statusHistory.progress = new Date().toISOString().split("T")[0];
+          } else if (task.status === "progress") {
+              task.status = "done";
+              task.statusHistory.done = new Date().toISOString().split("T")[0];
+             }
+
+    localStorage.setItem("tasks",JSON.stringify(state.tasks));
     },
 
     moveTaskBackward: (state,action) => {

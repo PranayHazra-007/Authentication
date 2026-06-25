@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import {useSelector,useDispatch} from "react-redux";
 import { logoutUser } from "../redux/slices/cartSlice";
 import { calculateProgress } from "./ProgressBar";
+import { FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
 const navigate = useNavigate();
@@ -81,13 +82,11 @@ style={{background:"rgba(15,23,42,0.95)",backdropFilter:"blur(10px)",boxShadow:"
         </Link>
       )}
 
-      <Link to="/cart" className="btn btn-primary position-relative fw-semibold" style={{borderRadius:"12px"}}>
-        🛒
-        {cartItems.length >0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {cartItems.length}
-          </span>
-        )}
+      <Link to="/cart" className="btn btn-primary position-relative fw-semibold d-flex align-items-center gap-2" style={{borderRadius: "12px"}}>
+         <FaShoppingCart /><span>Cart</span>
+            {cartItems.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {cartItems.length}</span>)}
       </Link>
 
       {currentUser ? (

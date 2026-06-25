@@ -33,6 +33,15 @@ const KanbanBoard = () => {
     setFormData({...formData,milestones: [...formData.milestones,{name: "",days: ""}]});
   };
 
+  const calculateLiveEndDate = () => {
+  if (!formData.startDate) return "";
+  const totalDays = formData.milestones.reduce((sum, m) => sum + Number(m.days || 0),0);
+  const date = new Date(formData.startDate);
+  date.setDate(date.getDate() + totalDays -1);
+
+  return date.toISOString().split("T")[0];
+};
+
   const resetForm = () => {
   setFormData({
     caption: "",
@@ -219,6 +228,9 @@ if (!currentUser?.username) {
                 <div>
                   <label>Start Date</label>
                     <input type="date" className="form-control" name="startDate" value={formData.startDate} onChange={handleChange}/>
+                    <div className="mt-2">
+                      <strong>End Date:</strong>{" "}{calculateLiveEndDate() || "N/A"}
+                    </div>
                 </div>
                </div>
           <hr/>

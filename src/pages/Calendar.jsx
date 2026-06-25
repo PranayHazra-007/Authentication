@@ -22,6 +22,44 @@ const Calendar = () => {
   for (let i = 1; i <= daysInMonth; i++) {
     calendarDays.push(i);
   }
+  const getStatusForDate = (
+  task,
+  currentDay
+) => {
+  const todoDate = new Date(
+    task.statusHistory?.todo
+  );
+
+  const progressDate =
+    task.statusHistory?.progress
+      ? new Date(
+          task.statusHistory.progress
+        )
+      : null;
+
+  const doneDate =
+    task.statusHistory?.done
+      ? new Date(
+          task.statusHistory.done
+        )
+      : null;
+
+  if (
+    doneDate &&
+    currentDay >= doneDate
+  ) {
+    return "done";
+  }
+
+  if (
+    progressDate &&
+    currentDay >= progressDate
+  ) {
+    return "progress";
+  }
+
+  return "todo";
+};
   const previousMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
@@ -121,8 +159,19 @@ const Calendar = () => {
                         <div className={`fw-bold fs-5 mb-2 ${isToday(day)? "text-primary": ""}`}>
                           {day} {isToday(day) && " 📍"}
                         </div>
-                        {getTasksForDate(day).map((task) => (
-                          <div key={`${task.id}-${day}`}className="card border-0 shadow-sm mb-2">
+                        {getTasksForDate(day).map((task) => {
+  const currentDay = new Date(year, month, day);
+
+  const status = getStatusForDate(
+    task,
+    currentDay
+  );
+
+  return (
+    <div
+      key={`${task.id}-${day}`}
+      className="card border-0 shadow-sm mb-2"
+    >
                             <div className="card-body p-2">
                               <div className="small text-primary fw-semibold">
                                 👤{" "}{task.username}
@@ -135,12 +184,20 @@ const Calendar = () => {
                                 {task.startDate}{" → "}{task.endDate}
                               </div>
 
-                              <span className={`badge mt-1 ${task.status ==="todo"? "bg-secondary": task.status ==="progress" ? "bg-warning text-dark" : "bg-success"}`}>
-                                {task.status.toUpperCase()}
-                              </span>
+                              <span
+  className={`badge mt-1 ${
+    status === "todo"
+      ? "bg-secondary"
+      : status === "progress"
+      ? "bg-warning text-dark"
+      : "bg-success"
+  }`}
+>
+  {status.toUpperCase()}
+</span>
                             </div>
                           </div>
-                        ))}
+                        )})}
                       </>
                     )}
                   </div>
