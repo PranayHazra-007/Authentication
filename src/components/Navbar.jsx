@@ -82,7 +82,7 @@ style={{background:"rgba(15,23,42,0.95)",backdropFilter:"blur(10px)",boxShadow:"
       )}
 
       <Link to="/cart" className="btn btn-primary position-relative fw-semibold" style={{borderRadius:"12px"}}>
-        Cart
+        🛒
         {cartItems.length >0 && (
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {cartItems.length}
