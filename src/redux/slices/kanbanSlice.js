@@ -85,8 +85,10 @@ const kanbanSlice = createSlice({
 
       if (task.status === "done") {
         task.status = "progress";
-      } else if (task.status === "progress") {
-        task.status = "todo";
+        task.statusHistory.done = null;
+       }else if (task.status === "progress") {
+          task.status = "todo";
+          task.statusHistory.progress = null;
       }
 
       localStorage.setItem("tasks",JSON.stringify(state.tasks));

@@ -22,17 +22,30 @@ const Calendar = () => {
   for (let i = 1; i <= daysInMonth; i++) {
     calendarDays.push(i);
   }
-  const getStatusForDate = (task,currentDay) => {
+  const getStatusForDate = (task, currentDay) => {
   if (!task.statusHistory) {
     return task.status;
   }
+
+  currentDay = new Date(currentDay);
+  currentDay.setHours(0,0,0,0);
+
   const progressDate = task.statusHistory.progress
-      ? new Date(task.statusHistory.progress) : null;
+    ? new Date(task.statusHistory.progress)
+    : null;
 
   const doneDate = task.statusHistory.done
-      ? new Date(task.statusHistory.done) : null;
+    ? new Date(task.statusHistory.done)
+    : null;
 
-  currentDay.setHours(0,0,0,0);
+  if (progressDate) {
+    progressDate.setHours(0,0,0,0);
+  }
+
+  if (doneDate) {
+    doneDate.setHours(0,0,0,0);
+  }
+
   if (doneDate && currentDay >= doneDate) {
     return "done";
   }
