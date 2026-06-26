@@ -176,6 +176,12 @@ const Calendar = () => {
                                  <span className={`badge mt-1 ${status === "todo" ? "bg-secondary" : status === "progress"? "bg-warning text-dark" : "bg-success"}`}>
                                    {status.toUpperCase()}
                                  </span>
+                                 {task.rating && (
+                                   <div className="small text-warning fw-bold mt-1">
+                                      {"🌟".repeat(task.rating)}
+                                      {/* {task.rating ===5 ? "🌟🌟🌟🌟🌟" : task.rating===4 ? "🌟🌟🌟🌟" :task.rating===3 ? "🌟🌟🌟" : task.rating===2 ? "🌟🌟" : "🌟"} */}
+                                   </div>
+                                    )}
                                     </div>
                                   </div>
                                )})}

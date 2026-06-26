@@ -152,10 +152,17 @@ if (!currentUser?.username) {
           {task.status === "done" && (
             <div className="mb-2">
               <label>Rating</label>
-              <input type="number" min="1" max="10" className="form-control" value={task.rating || ""}
+              <select className="form-select" value={task.rating || ""}
                 onChange={(e) =>
-                  dispatch(updateRating({id: task.id,rating:Number(e.target.value)}))
-                }/>
+                   dispatch(updateRating({id: task.id,rating: Number(e.target.value),}))}>
+                <option value="">Select Rating</option>
+
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
             </div>
           )}
 

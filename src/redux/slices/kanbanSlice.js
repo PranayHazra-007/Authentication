@@ -94,14 +94,13 @@ const kanbanSlice = createSlice({
       localStorage.setItem("tasks",JSON.stringify(state.tasks));
     },
 
-    updateRating: (state,action) => {
-      const task = state.tasks.find((item) => item.id === action.payload.id);
+    updateRating: (state, action) => {
+     const task = state.tasks.find((item) => item.id === action.payload.id);
 
-      if (task && task.status === "done") {
-        task.rating = action.payload.rating;
+     if (task && task.status === "done" && action.payload.rating >= 1 && action.payload.rating <= 5) {
+       task.rating = action.payload.rating;
         localStorage.setItem("tasks",JSON.stringify(state.tasks));
-      }
-    },
+      }},
 
     deleteTask: (state,action) => {
       const task = state.tasks.find((item) => item.id === action.payload);
