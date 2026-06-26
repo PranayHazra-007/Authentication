@@ -1,42 +1,30 @@
 import axios from "axios";
 
-const BASE_URL = "https://dummyjson.com/products";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const getProducts = () => axios.get(BASE_URL);
+// GET
+export const getData = (url = "") => {
+  return axios.get(`${BASE_URL}${url}`);
+};
 
-export const getProduct = (id) =>
-  axios.get(`${BASE_URL}/${id}`);
+// POST
+export const postData = (url = "", data) => {
+  return axios.post(`${BASE_URL}${url}`, data);
+};
 
-export const searchProducts = (q) =>
-  axios.get(`${BASE_URL}/search?q=${q}`);
+// PUT
+export const putData = (url = "", data) => {
+  return axios.put(`${BASE_URL}${url}`, data);
+};
 
-export const getCategories = () =>
-  axios.get(`${BASE_URL}/categories`);
+// DELETE
+export const deleteData = (url = "") => {
+  return axios.delete(`${BASE_URL}${url}`);
+};
 
-
-export const getProductsByCategory = (category) =>
-  axios.get(`${BASE_URL}/category/${category}`);
-
-export const addProduct = (data) =>
-  axios.post(
-    "https://dummyjson.com/products/add",
-    data
-  );
-
-export const updateProduct = (id, data) =>
-  axios.put(
-    `https://dummyjson.com/products/${id}`,
-    data
-  );
-
-export const deleteProduct = (id) =>
-  axios.delete(
-    `https://dummyjson.com/products/${id}`
-  );
-
+// Upload Image
 export const uploadImage = (file) => {
   const formData = new FormData();
-
   formData.append("image", file);
 
   return axios.post(

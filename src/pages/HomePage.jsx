@@ -3,128 +3,85 @@ import Navbar from "../components/Navbar";
 import Search from "../components/Search";
 import CategoryFilter from "../components/CategoryFilter";
 import ProductCard from "../components/ProductCard";
+import toast from "react-hot-toast";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setProducts } from "../redux/slices/productSlice";
-import {
-getProducts,
-getProductsByCategory,
-searchProducts,
-} from "../services/api";
+import {fetchProducts,searchProducts,categoryProducts,fetchCategories} from "../redux/slices/productSlice";
 
 const HomePage = () => {
 const dispatch = useDispatch();
 
-const products = useSelector(
-(state) => state.product?.products || []
-);
+const {products,loading,error,categories} = useSelector((state) => state.product);
+console.log(products);
+console.log(categories);
 
-const currentUser = JSON.parse(
-localStorage.getItem("currentUser")
-);
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-const [currentPage, setCurrentPage] =
-useState(1);
+const [currentPage, setCurrentPage] = useState(1);
 
 const productsPerPage = 8;
 
 useEffect(() => {
-fetchProducts();
-}, []);
+  dispatch(fetchProducts());
+  dispatch(fetchCategories());
+}, [dispatch]);
 
-const fetchProducts = () => {
-getProducts()
-.then((res) => {
-dispatch(
-setProducts(
-res.data.products
-)
-);
+const handleCategoryChange = async (category) => {
+  try {
+    if (category === "") {
+      await dispatch(fetchProducts()).unwrap();
+    } else {
+      await dispatch(categoryProducts(category)).unwrap();
+    }
 
     setCurrentPage(1);
-  })
-  .catch((err) =>
-    console.log(err)
+  } catch (err) {
+    toast.error("Failed to load category");
+  }
+};
+
+const handleSearch = async (searchText) => {
+  try {
+    if (searchText.trim() === "") {
+      await dispatch(fetchProducts()).unwrap();
+    } else {
+      await dispatch(searchProducts(searchText)).unwrap();
+    }
+
+    setCurrentPage(1);
+  } catch (err) {
+    toast.error("Search failed");
+  }
+};
+
+const indexOfLastProduct = currentPage * productsPerPage;
+const indexOfFirstProduct =indexOfLastProduct - productsPerPage;
+const currentProducts =products.slice(indexOfFirstProduct,indexOfLastProduct);
+const totalPages =Math.ceil(products.length / productsPerPage);
+
+if (loading) {
+  return (
+    <>
+      <Navbar />
+      <div className="container mt-5">
+        <h4>Loading...</h4>
+      </div>
+    </>
   );
-
-
-};
-
-const handleCategoryChange = (
-category
-) => {
-if (category === "") {
-fetchProducts();
-} else {
-getProductsByCategory(
-category
-)
-.then((res) => {
-dispatch(
-setProducts(
-res.data.products
-)
-);
-
-
-      setCurrentPage(1);
-    })
-    .catch((err) =>
-      console.log(err)
-    );
 }
 
-
-};
-
-const handleSearch = (
-searchText
-) => {
-if (
-searchText.trim() === ""
-) {
-fetchProducts();
-} else {
-searchProducts(
-searchText
-)
-.then((res) => {
-dispatch(
-setProducts(
-res.data.products
-)
-);
-
-
-      setCurrentPage(1);
-    })
-    .catch((err) =>
-      console.log(err)
-    );
+if (error) {
+  return (
+    <>
+      <Navbar />
+      <div className="container mt-5">
+        <h4 className="text-danger">
+          {error}
+        </h4>
+      </div>
+    </>
+  );
 }
-
-
-};
-
-const indexOfLastProduct =
-currentPage *
-productsPerPage;
-
-const indexOfFirstProduct =
-indexOfLastProduct -
-productsPerPage;
-
-const currentProducts =
-products.slice(
-indexOfFirstProduct,
-indexOfLastProduct
-);
-
-const totalPages =
-Math.ceil(
-products.length /
-productsPerPage
-);
 
 return (
 <>

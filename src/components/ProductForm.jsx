@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { uploadImage, getCategories } from "../services/api";
+import { uploadImage } from "../services/api";
+import { useSelector } from "react-redux";
 
-const ProductForm = ({
-  onSubmit,
-  editProduct,
-  cancelEdit,
-}) => {
+const ProductForm = ({onSubmit,editProduct,cancelEdit}) => {
+  const { categories } = useSelector((state) => state.product);
+
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -14,8 +13,6 @@ const ProductForm = ({
     description: "",
     images:[]
   });
-  const [categories, setCategories] = useState([]);
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -37,13 +34,6 @@ const ProductForm = ({
       });
     }
   }, [editProduct]);
-  useEffect(() => {
-  getCategories()
-    .then((res) => {
-      setCategories(res.data);
-    })
-    .catch((err) => console.log(err));
-}, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -56,10 +46,8 @@ const ProductForm = ({
   const files = Array.from(e.target.files);
 
   if (files.length === 0) return;
-
   try {
     setLoading(true);
-
     for (const file of files) {
       await uploadImage(file);
     }
@@ -74,7 +62,9 @@ const ProductForm = ({
 
     toast.success("Images uploaded successfully");
   } catch (err) {
-    console.log(err);
+     console.log("Full Error:", err);
+  console.log("Response:", err.response);
+  console.log("Message:", err.message);
     setFormData((prev) => ({
       ...prev,
       images: [

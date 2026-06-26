@@ -4,96 +4,59 @@ import ProductForm from "../components/ProductForm";
 import ProductTable from "../components/ProductTable";
 import toast from "react-hot-toast";
 
-import {
-  getProducts,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+
+import {fetchProducts,addProduct,updateProduct,fetchCategories,deleteProduct} from "../redux/slices/productSlice";
 
 const ManageProduct = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const {products,loading,error} = useSelector((state) => state.product);
   const [filteredProducts, setFilteredProducts] =useState([]);
   const [search, setSearch] = useState("");
   const [editProduct, setEditProduct] =useState(null);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+  dispatch(fetchProducts());
+  dispatch(fetchCategories());
+  }, [dispatch]);
 
-  const fetchProducts = () => {
-    getProducts()
-      .then((res) => {
-        setProducts(res.data.products);
-        setFilteredProducts(res.data.products);
-      })
-      .catch((err) => console.log(err));
-  };
+  useEffect(() => {
+  if (search.trim() === "") {
+    setFilteredProducts(products);
+  } else {
+    setFilteredProducts(
+      products.filter((item) => item.title.toLowerCase().includes(search.toLowerCase()))
+    );
+  }
+}, [products, search]);
+
   // Search
   const handleSearch = (e) => {
     const value = e.target.value;
-
     setSearch(value);
-
     const filtered = products.filter((item) =>
-      item.title
-        .toLowerCase()
-        .includes(value.toLowerCase())
+      item.title.toLowerCase().includes(value.toLowerCase())
     );
-
     setFilteredProducts(filtered);
   };
   // Add & Update
   const handleSubmit = async (formData) => {
     try {
-
-      if (editProduct) {
-
-        const res = await updateProduct(
-          editProduct.id,
-          formData
-        );
-
-        const updated = products.map((item) =>
-          item.id === editProduct.id
-            ? res.data
-            : item
-        );
-
-        setProducts(updated);
-
-        setFilteredProducts(updated);
-
-        setEditProduct(null);
-
-        toast.success(
-          "Product Updated Successfully"
-        );
-
-      } else {
-
-        const res = await addProduct(formData);
-
-        const updated = [
-          ...products,
-          res.data,
-        ];
-
-        setProducts(updated);
-
-        setFilteredProducts(updated);
-
-        toast.success(
-          "Product Added Successfully"
-        );
-      }
+     if (editProduct) {
+      await dispatch(updateProduct({
+      id: editProduct.id,...formData,})).unwrap();
+      dispatch(fetchProducts());
+      setEditProduct(null);
+      toast.success("Product Updated Successfully");
+     }else {
+        await dispatch(addProduct(formData)).unwrap();
+          dispatch(fetchProducts());
+          toast.success("Product Added Successfully");
+        }
 
     } catch (err) {
-
       console.log(err);
-
       toast.error("Something went wrong");
-
     }
   };
   // Edit
@@ -103,29 +66,13 @@ const ManageProduct = () => {
   // Delete
   const handleDelete = async (id) => {
 
-    if (
-      !window.confirm(
-        "Delete this product?"
-      )
-    )
+    if (!window.confirm("Delete this product?"))
       return;
 
     try {
-
-      await deleteProduct(id);
-
-      const updated = products.filter(
-        (item) => item.id !== id
-      );
-
-      setProducts(updated);
-
-      setFilteredProducts(updated);
-
-      toast.success(
-        "Product Deleted Successfully"
-      );
-
+      await dispatch(deleteProduct(id)).unwrap();
+        dispatch(fetchProducts());
+        toast.success("Product Deleted Successfully");
     } catch (err) {
 
       console.log(err);
@@ -134,6 +81,28 @@ const ManageProduct = () => {
 
     }
   };
+  if (loading) {
+  return (
+    <>
+      <Navbar />
+      <div className="container mt-5">
+        <h4>Loading...</h4>
+      </div>
+    </>
+  );
+}
+if (error) {
+  return (
+    <>
+      <Navbar />
+      <div className="container mt-5">
+        <h4 className="text-danger">
+          {error}
+        </h4>
+      </div>
+    </>
+  );
+}
     return (
     <>
       <Navbar />
